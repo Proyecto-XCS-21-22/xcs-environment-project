@@ -611,8 +611,198 @@ curl -i  -u dgpena:dgpena http://localhost:8080/web-0.0.1-SNAPSHOT/api/user
 curl -X PUT -i -u pepe:pepe http://localhost:8080/web-0.0.1-SNAPSHOT/api/user/friend/incoming/dgpena
 ```
 
+## Exercise 4: JSF
 
-## Exercise 4: AngularJS (Optional)
+### Initial JSF example
+
+Dummy JSF page to see Facelets views (xhtml) and ManagedBeans integration.
+
+- Can be done in a disposable branch of your web project or in an empty web project.
+
+#### Setting environment+project
+
+We will employ WildFly 8.2 default JSF implementation (Mojarra 2.2.8), so there is no need to include JSF dependences in our maven configuration
+
+
+##### Declare FacesServlet in web.xml
+
+Add JSF Servlet configuration to `[src/main/webapp/WEB-INF/web.xml]`
+```xml
+ <context-param>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>Development</param-value>
+ </context-param>
+ <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+ </servlet>
+ <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>/faces/*</url-pattern>
+ </servlet-mapping>
+ <session-config>
+        <session-timeout> 30 </session-timeout>
+ </session-config>
+ <welcome-file-list>
+        <welcome-file>faces/index.xhtml</welcome-file>
+ </welcome-file-list>
+```
+
+**NOTE:** In a container using Servlet version 3.0 or above this configuration step is not strictly mandatory (See [JSF 2.2 API Javadoc](https://javaserverfaces.java.net/nonav/docs/2.2/javadocs/index.html)) for more details)
+
+Facelet based JSF views (xhtml files) will be located at the web project root folder,`[/src/main/webapp/]`
+
+#### Create a test JSF view
+
+**[Step 1]** Create a "backing bean" (JSF ManagedBean) to hold data and methods employed in this example.
+
+Create a package `[es.uvigo.esei.dgss.exercises.jsf.controllers]` into your Java source code folder to hold JSF managed beans.
+
+* __Alternative 1__ (to be deprecated): create a JSF native `@ManagedBean`
+   1. Add a `TestController.java` file to `es.uvigo.esei.dgss.exercises.jsf.controllers` with the following class definition.
+   ```java
+   @ManagedBean(name="testController")
+   @SessionScoped
+   public class TestController implements Serializable {
+   ...
+   }
+   ```
+   IMPORTANT: Make sure that Java imports for `@SessionScoped` and `@ManagedBean` are using JSF packages (`import javax.faces.bean.ManagedBean` and `import javax.faces.bean.SessionScoped`)
+
+* __Alternative 2__ (recommended): create a CDI Bean with `@Named` annotation
+   1. PREVIOUS: Add CDI support to your Java EE application
+
+     Create an empty `[src/main/webapp/WEB-INF/beans.xml]` file. 
+     Make sure `bean-discovery-mode` option is set to `"all"`.
+
+     ```xml
+     <?xml version="1.0" encoding="UTF-8"?>
+     <beans xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+                           http://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd"
+       bean-discovery-mode="all">
+     </beans>
+     ```
+   2. Add a `TestController.java` file to `es.uvigo.esei.dgss.exercises.jsf.controllers` with the following class definition.
+
+   ```java
+   @Named(value="testController")
+   @SessionScoped
+   public class TestController implements Serializable {
+   ...
+   }
+   ```
+      IMPORTANT: Make sure that the Java import for `@SessionScoped` is `javax.enterprise.context.SessionScoped`
+
+**[Step 2]** Add the following content (attibutes with getters and setters, empty constructor, init method and action method) to the `TestController` managed bean.
+```java
+private Date date;
+private int operand1;
+private int operand2;
+private int result;
+
+public TestController() {
+}
+// add Getter and setters
+
+@PostConstruct
+public void initDate() {
+  date = Calendar.getInstance().getTime();
+}
+
+public String doAddition() {
+  result = operand1 + operand2;
+  return "index";
+}
+```
+
+**[Step 3]** Create a Facelet file `[src/main/webapp/index.xhtml]` and add the following tags.
+```xml
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>JSF Test</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <h:messages />
+
+            <h:panelGrid columns="2">
+                <h:outputLabel value="Operand 1:"/>
+                <h:inputText value="#{testController.operand1}" required="true"/>
+
+                <h:outputLabel value="Operand 2:"/>
+                <h:inputText value="#{testController.operand2}" required="true"/>
+
+                <h:outputLabel value="Result:"/>
+                <h:outputLabel value="#{testController.result}"/>
+            </h:panelGrid>
+
+            <h:commandButton value="Add" action="#{testController.doAddition()}"/>
+
+            <ul>
+                <li> Date:
+                    <h:outputText value="#{testController.date}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputText>
+                </li>
+            </ul>
+        </h:form>
+    </h:body>
+</html>
+```
+
+After building and deploying your project, this JSF aplication will be available at URI  `http://localhost:8080/[project_name]` (use `web-0.0.1-SNAPSHOT` as project name in `bob-esi-solutions` project).
+
+ADDITIONAL TEST: Add an `Operation` class and a `List<Operation> operations` attribute to `TestController` in order to show a record of the performed operations.
+
+### Task 1
+Build a very simple JSF view to provide a basic `User` search interface.
+
+1. Query you service layer using the `String` provided by the user in the search Text Field.
+2. Retrieve and show the list of mathing `Users`.
+3. Once the user selects one of the mathing `Users`, show `User` profile information and the list of `Posts` writen by that `User`
+
+Steps:
+
+* Sketch your view(s) and identify which attributes much  be included in your "backing bean"
+* Create your "backing bean" and inject (with `@EJB` or `@Inject`) the EJB components from your Service Layer to deal with `User` search and with `Post` retrieval.
+
+  * **Note:** Maybe you will need to add new methods to `UserEJB` and `PostEJB` in order to support those funcitonalities
+  
+* Design you `xhtml` JSF view(s) using standard JSF components and simple interaction (no `<f:ajax>` interaction)
+
+### Task 2
+Improve the previous JSF view(s):
+
+1. Employ Primefaces or Bootfaces components instead of standard ones
+
+  **Note:** Add Primefaces or Bootfaces dependences to your web project `pom.xml`
+```xml
+<dependency>
+  <groupId>org.primefaces</groupId>
+  <artifactId>primefaces</artifactId>
+  <version>6.1</version>
+</dependency>
+```
+or
+```xml
+<dependency>
+    <groupId>net.bootsfaces</groupId>
+    <artifactId>bootsfaces</artifactId>
+    <version>1.1.3</version>
+</dependency>
+```
+
+2. Use JSF Templates to unify views and simplify `xhtml` contents
+3. Include AJAX interacions to avoid reloading full views: use JSF native AJAX support [`<f:ajax>`] or Primefaces/Bootfaces own AJAX engine
+
+## Exercise 5: AngularJS (Optional)
 
 **This exercise is optional. By doing it, your grading could be increased above the 100%**
 
@@ -847,198 +1037,4 @@ function and, if it does not return 401, you can assume that the user credential
 - Post a simple text post (30%)
 - Add like to post (20%)
 
-
-## Exercise 5: JSF
-
-### Initial JSF example
-
-Dummy JSF page to see Facelets views (xhtml) and ManagedBeans integration.
-
-- Can be done in a disposable branch of your web project or in an empty web project.
-
-#### Setting environment+project
-
-We will employ WildFly 8.2 default JSF implementation (Mojarra 2.2.8), so there is no need to include JSF dependences in our maven configuration
-
-
-##### Declare FacesServlet in web.xml
-
-Add JSF Servlet configuration to `[src/main/webapp/WEB-INF/web.xml]`
-```xml
- <context-param>
-        <param-name>javax.faces.PROJECT_STAGE</param-name>
-        <param-value>Development</param-value>
- </context-param>
- <servlet>
-        <servlet-name>Faces Servlet</servlet-name>
-        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
- </servlet>
- <servlet-mapping>
-        <servlet-name>Faces Servlet</servlet-name>
-        <url-pattern>/faces/*</url-pattern>
- </servlet-mapping>
- <session-config>
-        <session-timeout> 30 </session-timeout>
- </session-config>
- <welcome-file-list>
-        <welcome-file>faces/index.xhtml</welcome-file>
- </welcome-file-list>
-```
-
-**NOTE:** In a container using Servlet version 3.0 or above this configuration step is not strictly mandatory (See [JSF 2.2 API Javadoc](https://javaserverfaces.java.net/nonav/docs/2.2/javadocs/index.html)) for more details)
-
-Facelet based JSF views (xhtml files) will be located at the web project root folder,`[/src/main/webapp/]`
-
-#### Create a test JSF view
-
-**[Step 1]** Create a "backing bean" (JSF ManagedBean) to hold data and methods employed in this example.
-
-Create a package `[es.uvigo.esei.dgss.exercises.jsf.controllers]` into your Java source code folder to hold JSF managed beans.
-
-* __Alternative 1__ (to be deprecated): create a JSF native `@ManagedBean`
-   1. Add a `TestController.java` file to `es.uvigo.esei.dgss.exercises.jsf.controllers` with the following class definition.
-   ```java
-   @ManagedBean(name="testController")
-   @SessionScoped
-   public class TestController implements Serializable {
-   ...
-   }
-   ```
-   IMPORTANT: Make sure that Java imports for `@SessionScoped` and `@ManagedBean` are using JSF packages (`import javax.faces.bean.ManagedBean` and `import javax.faces.bean.SessionScoped`)
-
-* __Alternative 2__ (recommended): create a CDI Bean with `@Named` annotation
-   1. PREVIOUS: Add CDI support to your Java EE application
-
-     Create an empty `[src/main/webapp/WEB-INF/beans.xml]` file. 
-     Make sure `bean-discovery-mode` option is set to `"all"`.
-
-     ```xml
-     <?xml version="1.0" encoding="UTF-8"?>
-     <beans xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
-                           http://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd"
-       bean-discovery-mode="all">
-     </beans>
-     ```
-   2. Add a `TestController.java` file to `es.uvigo.esei.dgss.exercises.jsf.controllers` with the following class definition.
-
-   ```java
-   @Named(value="testController")
-   @SessionScoped
-   public class TestController implements Serializable {
-   ...
-   }
-   ```
-      IMPORTANT: Make sure that the Java import for `@SessionScoped` is `javax.enterprise.context.SessionScoped`
-
-**[Step 2]** Add the following content (attibutes with getters and setters, empty constructor, init method and action method) to the `TestController` managed bean.
-```java
-private Date date;
-private int operand1;
-private int operand2;
-private int result;
-
-public TestController() {
-}
-// add Getter and setters
-
-@PostConstruct
-public void initDate() {
-  date = Calendar.getInstance().getTime();
-}
-
-public String doAddition() {
-  result = operand1 + operand2;
-  return "index";
-}
-```
-
-**[Step 3]** Create a Facelet file `[src/main/webapp/index.xhtml]` and add the following tags.
-```xml
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <h:head>
-        <title>JSF Test</title>
-    </h:head>
-    <h:body>
-        <h:form>
-            <h:messages />
-
-            <h:panelGrid columns="2">
-                <h:outputLabel value="Operand 1:"/>
-                <h:inputText value="#{testController.operand1}" required="true"/>
-
-                <h:outputLabel value="Operand 2:"/>
-                <h:inputText value="#{testController.operand2}" required="true"/>
-
-                <h:outputLabel value="Result:"/>
-                <h:outputLabel value="#{testController.result}"/>
-            </h:panelGrid>
-
-            <h:commandButton value="Add" action="#{testController.doAddition()}"/>
-
-            <ul>
-                <li> Date:
-                    <h:outputText value="#{testController.date}">
-                        <f:convertDateTime pattern="dd/MM/yyyy"/>
-                    </h:outputText>
-                </li>
-            </ul>
-        </h:form>
-    </h:body>
-</html>
-```
-
-After building and deploying your project, this JSF aplication will be available at URI  `http://localhost:8080/[project_name]` (use `web-0.0.1-SNAPSHOT` as project name in `bob-esi-solutions` project).
-
-ADDITIONAL TEST: Add an `Operation` class and a `List<Operation> operations` attribute to `TestController` in order to show a record of the performed operations.
-
-### Task 1
-Build a very simple JSF view to provide a basic `User` search interface.
-
-1. Query you service layer using the `String` provided by the user in the search Text Field.
-2. Retrieve and show the list of mathing `Users`.
-3. Once the user selects one of the mathing `Users`, show `User` profile information and the list of `Posts` writen by that `User`
-
-Steps:
-
-* Sketch your view(s) and identify which attributes much  be included in your "backing bean"
-* Create your "backing bean" and inject (with `@EJB` or `@Inject`) the EJB components from your Service Layer to deal with `User` search and with `Post` retrieval.
-
-  * **Note:** Maybe you will need to add new methods to `UserEJB` and `PostEJB` in order to support those funcitonalities
-  
-* Design you `xhtml` JSF view(s) using standard JSF components and simple interaction (no `<f:ajax>` interaction)
-
-### Task 2
-Improve the previous JSF view(s):
-
-1. Employ Primefaces or Bootfaces components instead of standard ones
-
-  **Note:** Add Primefaces or Bootfaces dependences to your web project `pom.xml`
-```xml
-<dependency>
-  <groupId>org.primefaces</groupId>
-  <artifactId>primefaces</artifactId>
-  <version>6.1</version>
-</dependency>
-```
-or
-```xml
-<dependency>
-    <groupId>net.bootsfaces</groupId>
-    <artifactId>bootsfaces</artifactId>
-    <version>1.1.3</version>
-</dependency>
-```
-
-2. Use JSF Templates to unify views and simplify `xhtml` contents
-3. Define a composite component to show user's `Posts` and use `<ui:repeat>` to get a personalized view (avoid `<h:dataTable>`)
-
-  * See an example at [The Java EE Tutorial, 14.4 The compositecomponentexample Example Application](http://docs.oracle.com/javaee/7/tutorial/jsf-advanced-cc004.htm])
-4. Include AJAX interacions to avoid reloading full views: use JSF native AJAX support [`<f:ajax>`] or Primefaces/Bootfaces own AJAX engine
 
