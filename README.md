@@ -47,9 +47,11 @@ Inside the MySQL console, create the database `dgss`
 Create the MySQL user `dgssuser` with password `dgsspass` and grant him all
 privileges on the `dgss` database
 
-    grant all privileges on dgss.* to dgssuser@localhost identified by "dgsspass";
+    CREATE USER 'dgssuser'@'localhost' IDENTIFIED BY 'dgsspass';
+    GRANT ALL PRIVILEGES ON dgss.* TO 'dgssuser'@'localhost' WITH GRANT OPTION;
 
 Exit the MySQL console
+
     exit
 
 ### WildFly
@@ -59,11 +61,14 @@ Download
 Uncompress the downloaded zip in any folder on your computer.
 
 #### Configure the MySQL driver and the dgss datasource in WildFly
-Download [mysql driver 5.1.21](http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.21/mysql-connector-java-5.1.21.jar)
+Download MySQL JDBC Driver (.jar file) for **your MySQL version** (the major version). Here are some links:
+- [5.1.21](https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.21/mysql-connector-java-5.1.21.jar)
+- [8.0.21](https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.21/mysql-connector-java-8.0.21.jar)
+
 and copy it inside the `standalone/deployments` folder of widlfly
 
 Create the mysql-ds.xml file with the following content and place it inside
-the `standalone/deployments` folder of widlfly
+the `standalone/deployments` folder of widlfly. **Please note: check the name of the .jar file inside `<driver>`**
 
 ```xml
 <datasources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -72,8 +77,8 @@ the `standalone/deployments` folder of widlfly
 
   <datasource jndi-name="datasource/dgss" pool-name="MySQLPool">
 
-      <connection-url>jdbc:mysql://localhost:3306/dgss</connection-url>
-      <driver>mysql-connector-java-5.1.21.jar</driver>
+      <connection-url>jdbc:mysql://localhost:3306/dgss?serverTimezone=UTC</connection-url>
+      <driver>mysql-connector-java-8.0.21.jar</driver>
       <pool>
           <max-pool-size>30</max-pool-size>
       </pool>
