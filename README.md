@@ -5,33 +5,24 @@ inside the DGSS itinerary.
 
 ## Deployment Environment
 
-The environment is based on Maven 3, MySQL 5.5, WildFly 8.2.1 and Eclipse Neon
-for JEE.
+The environment is based on Maven 3, MySQL 5.5, WildFly 8.2.1 and Eclipse IDE for Enterprise Java and Web Developers.
 
 ### Java JDK 8
-Download and install Java JDK 8, preferably the Oracle version (the commands
-`java` and `javac` must be available).
+Download and install Java JDK 8, preferably the Oracle version (the commands `java` and `javac` must be available).
 
 ### Maven
-Install Maven 3 in your system, if it was not installed (the `mvn` command must
-be available)
+Install Maven 3 in your system, if it was not installed (the `mvn` command must be available).
 
 ### Git
-First, install git in your system if it was not installed (the `git` command
-must be available). We will work with Git to get updates of these exercises,
-as well as to deliver the student solution. Concretely, we will work with 2 Git
-repositories inside the [our Gitlab server](http://sing-group.org/dt/gitlab)
+First, install git in your system if it was not installed (the `git` command must be available). We will work with Git to get updates of these exercises, as well as to deliver the student solution. Concretely, we will work with 2 Git repositories inside the [our Gitlab server](http://sing-group.org/dt/gitlab)
 
 1. The main repository (read-only for students)
 
-    Git url: `http://sing-group.org/dt/gitlab/dgss/esi-exercises.git`
+    Git url: `http://sing-group.org/dt/gitlab/dgss-2122/esi-exercises.git`
 
-2. The student's solution repository. Surf to
-[our Gitlab server](http://sing-group.org/dt/gitlab) and create a user with
-your @esei.uvigo.es email account. If your username is `bob`, create
-a **PRIVATE** project `bob-esi-solutions`
+2. The student's solution repository. Surf to [our Gitlab server](http://sing-group.org/dt/gitlab) and create a user with your `@esei.uvigo.es` email account. If your username is `bob`, create a **PRIVATE** project `bob-esi-solutions`:
 
-    Git url: `http://sing-group.org/dt/gitlab/bob/bob-esi-solutions.git`
+Git url: `http://sing-group.org/dt/gitlab/bob/bob-esi-solutions.git`
 
 ### MySQL
 Download and install MySQL 5.5 locally.
@@ -42,21 +33,21 @@ Connect to the MySQL client console as root.
 
 Inside the MySQL console, create the database `dgss`
 
-    create database dgss;
+    CREATE DATABASE dgss;
 
 Create the MySQL user `dgssuser` with password `dgsspass` and grant him all
 privileges on the `dgss` database
 
-    CREATE USER 'dgssuser'@'localhost' IDENTIFIED BY 'dgsspass';
-    GRANT ALL PRIVILEGES ON dgss.* TO 'dgssuser'@'localhost' WITH GRANT OPTION;
+    CREATE USER dgssuser@'%' IDENTIFIED BY 'dgsspass';
+    GRANT ALL PRIVILEGES ON dgss.* TO dgssuser@'%';
+    FLUSH PRIVILEGES;
 
 Exit the MySQL console
 
-    exit
+    EXIT
 
 ### WildFly
-Download
-[WildFly 8.2.1.Final](http://download.jboss.org/wildfly/8.2.1.Final/wildfly-8.2.1.Final.zip)
+Download [WildFly 8.2.1.Final](http://download.jboss.org/wildfly/8.2.1.Final/wildfly-8.2.1.Final.zip).
 
 Uncompress the downloaded zip in any folder on your computer.
 
@@ -65,10 +56,9 @@ Download MySQL JDBC Driver (.jar file) for **your MySQL version** (the major ver
 - [5.1.21](https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.21/mysql-connector-java-5.1.21.jar)
 - [8.0.21](https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.21/mysql-connector-java-8.0.21.jar)
 
-and copy it inside the `standalone/deployments` folder of widlfly
+Copy it inside the `standalone/deployments` folder of WildFly.
 
-Create the mysql-ds.xml file with the following content and place it inside
-the `standalone/deployments` folder of widlfly. **Please note: check the name of the .jar file inside `<driver>`**
+Create the `mysql-ds.xml` file with the following content and place it inside the `standalone/deployments` folder of WildFly. **Please note: check the name of the .jar file inside `<driver>`**
 
 ```xml
 <datasources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -105,7 +95,7 @@ Check if WildFly is running by browsing to [http://localhost:8080](http://localh
 
 ### Add the original repository (esi-exercises) as a remote in order to retrieve updates
 
-    git remote add exercises http://sing-group.org/dt/gitlab/dgss/esi-exercises.git
+    git remote add exercises http://sing-group.org/dt/gitlab/dgss-2122/esi-exercises.git
 
 ### Retrieve the exercises project master branch to your local master branch
 
@@ -124,9 +114,7 @@ With the WildFly server up and running, you have to go inside your source code f
     mvn wildfly:deploy
     cd ..
 
-Surf to [http://localhost:8080/web-0.0.1-SNAPSHOT ](http://localhost:8080/web-0.0.1-SNAPSHOT) to see
-your web. You have to create a index.html, or a Servlet inside the web
-subproject in order to see something.
+Surf to [http://localhost:8080/web-0.0.1-SNAPSHOT ](http://localhost:8080/web-0.0.1-SNAPSHOT) to see your web. You have to create an `index.html`, or a Servlet inside the web subproject in order to see something.
 
     mkdir -p web/src/main/webapp
     echo "hello world" > web/src/main/webapp/index.html
@@ -135,7 +123,7 @@ subproject in order to see something.
     git add .
     # or
     git add <concrete_files>
-
+    
     git commit
 
 ### Pushing your changes to your remote repository
@@ -145,25 +133,22 @@ subproject in order to see something.
     git push
 
 ### Get updates from the exercises remote
-When the exercise details are updated or fixed, they will be available as new
-commits in the `exercises/master` branch. In order to get its updates and to
-merge them with our solution branch, we have to run (please note: remember to
-add the `exercises` remote as we did few steps ago).
+When the exercise details are updated or fixed, they will be available as new commits in the `exercises/master` branch. In order to get its updates and to merge them with our solution branch, we have to run (please note: remember to add the `exercises` remote as we did few steps ago).
 
-**Note:** You should commit your work in progress before doing this.
+*Note*: you should commit your work in progress before doing this.
 
     # update all remote branches to see changes to pull
     git fetch --all
-
+    
     # change to branch master
     git checkout master
-
+    
     # get changes from the exercises/master
     git pull exercises master
-
+    
     # return to the branch solution
     git checkout solution
-
+    
     # merge your solution branch with the changes from master.  If there is a
     # conflict, both you and the teacher have made changes in the same files.
     # You have to resolve the conflict
@@ -172,15 +157,13 @@ add the `exercises` remote as we did few steps ago).
 That's all. You can now continue developing your changes in your solution branch.
 
 ### Eclipse
-You can use any other IDE, such as IntelliJ IDEA or NetBeans, as long as they
-are compatible with Maven projects.
+You can use any other IDE, such as IntelliJ IDEA or NetBeans, as long as they are compatible with Maven projects.
 
-Open Eclipse Neon JEE and import your Maven project with
-`File -> Import -> Maven -> Existing Maven Projects`
+Open Eclipse and import your Maven project with `File -> Import -> Maven -> Existing Maven Projects`
 
-Select your source code folder (where the `pom.xml` should be placed)
+Select your source code folder (where the `pom.xml` should be placed).
 
-Eclipse should then import 3 projects (`service`, `web` and `domain`)
+Eclipse should then import 3 projects (`service`, `web` and `domain`).
 
 You can run, if you want the project by:
 1. Right click on `bob-esi-solutions` project and `Run As -> Maven install`
@@ -190,19 +173,16 @@ Put `wildfly:deploy` as Goal.
 ## Exercise 1: JPA
 
 ### Task 1.
-Inside the **domain project**, create a set of JPA entities given the ER model
-you can find in the ER.png file. You will need also to create the java source
-folder.
+Inside the **domain project**, create a set of JPA entities given the ER model you can find in the `ER.png` file. You will need also to create the `java` source folder.
 
     mkdir -p domain/src/main/java
 
 ![Entity-Relationship diagram](ER.png)
 
-Use this package for your entities: `es.uvigo.esei.dgss.exercises.domain`
+Use this package for your entities: `es.uvigo.esei.dgss.exercises.domain`.
 
 ### Task 2.
-Inside the **Web project**, create a Facade class containing one method
-per each query (use JPA QL) in the following list.
+Inside the **Web project**, create a Facade class containing one method per each query (use JPA QL) in the following list.
 
 Use this package: `es.uvigo.esei.dgss.exercises.web`
 
@@ -215,8 +195,7 @@ You will also need to create the source folders in this project:
 2. Create a friendship between two given users
 3. Get all friends of a given user
 4. Get all posts of the friends of a given user
-5. Get the posts that have been commented by the friends of a given user after
-a given date
+5. Get the posts that have been commented by the friends of a given user after a given date
 6. Get the users which are friends of a given user who like a given post
 7. Give me all the pictures a given user likes
 8. Create a list of potential friends for a given user (feel free to create
@@ -258,8 +237,7 @@ public class Facade {
 }
 ```
 
-In order to test the facade, an easy solution would be to create a
-"Simple Servlet" as this one:
+In order to test the facade, an easy solution would be to create a "Simple Servlet" as this one:
 
 ```java
 package es.uvigo.esei.dgss.exercises.web;
@@ -294,7 +272,7 @@ public class SimpleServlet extends HttpServlet {
 	private UserTransaction transaction;
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) 
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
 		PrintWriter writer = resp.getWriter();
@@ -313,7 +291,7 @@ public class SimpleServlet extends HttpServlet {
 	}
 
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) 
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		PrintWriter writer = resp.getWriter();
 		writer.println("<html><body>");
@@ -323,7 +301,7 @@ public class SimpleServlet extends HttpServlet {
 		writer.println("</body></html>");
 	}
 
-	private void task1(HttpServletRequest req, HttpServletResponse resp, PrintWriter writer) 
+	private void task1(HttpServletRequest req, HttpServletResponse resp, PrintWriter writer)
 			throws IOException {
 		// work with Facade
 
@@ -333,7 +311,7 @@ public class SimpleServlet extends HttpServlet {
 			// Task 2.1
 			User u = facade.addUser(UUID.randomUUID().toString(), "name", "password", new byte[] {});
 			writer.println("User " + u.getLogin() + " created successfully");
-			
+
 			writer.println("<a href='SimpleServlet'>Go to menu</a>");
 
 			transaction.commit();
@@ -358,56 +336,43 @@ public class SimpleServlet extends HttpServlet {
 }
 ```
 
-Now, you can surf to
-[http://localhost:8080/web-0.0.1-SNAPSHOT/SimpleServlet](http://localhost:8080/web-0.0.1-SNAPSHOT/SimpleServlet)
-to run the Servlet.
+Now, you can surf to [http://localhost:8080/web-0.0.1-SNAPSHOT/SimpleServlet](http://localhost:8080/web-0.0.1-SNAPSHOT/SimpleServlet) to run the Servlet.
 
 ## Exercise 2: EJB
-In this exercise, we will create a simple EJB layer. We will use the
-**Service project** for this purpose.
+In this exercise, we will create a simple EJB layer. We will use the **Service project** for this purpose.
 
 Use the package `es.uvigo.esei.dgss.exercise.service`.
 
 ### Task 1.
 Create two EJB for general management of the social network.
 
-- UserEJB, for retrieving, creating updating and removing users, as well as to
-create friendships between them and to like posts.
-- PostEJB, for retrieving, creating updating and retrieving posts, as well as to
-add comments to them.
+- `UserEJB`, for retrieving, creating updating and removing users, as well as to create friendships between them and to like posts.
+- `PostEJB`, for retrieving, creating updating and retrieving posts, as well as to add comments to them.
 
-In order to test your EJBs, you can re-use your `SimpleServlet`. Inject your
-EJBs inside the Servlet with the `@EJB` annotation.
+In order to test your EJBs, you can re-use your `SimpleServlet`. Inject your EJBs inside the Servlet with the `@EJB` annotation.
 
 ### Task 2.
-Create a StatisticsEJB, allowing you to retrieve the number of users and posts
-in the social network. It should be very efficient (do not access to the DB everytime
-it is queried) and shared for all users of the system (think in Singleton). That
-is:
+Create a `StatisticsEJB`, allowing you to retrieve the number of users and posts in the social network. It should be very efficient (do not access to the DB everytime it is queried) and shared for all users of the system (think in Singleton). That is:
 
-- Create a singleton EJB, which ONLY when it is started accesses the
-database and counts users and posts to a private variable.
-- When a user or a post is added, removed, you should call a singleton method
-to notify this. The singleton updates its internal count.
+- Create a singleton EJB, which ONLY when it is started accesses the database and counts users and posts to a private variable.
+- When a user or a post is added, removed, you should call a singleton method to notify this. The singleton updates its internal count.
 - Give getter methods for the user and post counts.
 
-Note: Take into account concurrency issues!
+*Note*: Take into account concurrency issues!
 
 ### Task 3.
-Add an EmailService EJB. This EJB allow you to send an email to a given User:
+Add an `EmailService` EJB. This EJB allow you to send an email to a given User:
 `sendEmail(User u, String subject, String body)`.
 
 - This service should send emails asynchronously.
-- In order to use this EJB, send an email to the post's author everytime a user
-likes his post.
-- Implement this service [using Java Mail inside Wildfly](http://khozzy.blogspot.com.es/2013/10/how-to-send-mails-from-jboss-wildfly.html).
+- In order to use this EJB, send an email to the post's author everytime a user likes his post.
+- Implement this service [using Java Mail inside WildFly](http://khozzy.blogspot.com.es/2013/10/how-to-send-mails-from-jboss-wildfly.html).
 
 
 ## Java EE Security
-Before continue, it is time to start adding security capabilities to our application.
-We should configure Wildfly to do this. (Code based on [this post](http://gadgetsytecnologia.com/bab8590ce806f7f7f/cannot-get-password-custom-loginmodule.html))
+Before continue, it is time to start adding security capabilities to our application. We should configure WildFly to do this. (Code based on [this post](http://gadgetsytecnologia.com/bab8590ce806f7f7f/cannot-get-password-custom-loginmodule.html))
 
-### Configure the security domain in Wildfly
+### Configure the security domain in WildFly
 Edit the `standalone/configuration/standalone.xml` file and:
 
 - Inside `<security-realms>`, create this new realm:
@@ -451,13 +416,11 @@ Finally, again inside `<security-domain>`, place the security domain for the app
         </authentication>
     </security-domain>
 ```
-**Note:** Keep attention to the `principalsQuery` and the `rolesQuery` in order
-to adapt them to your application database structure.
+*Note*: keep attention to the `principalsQuery` and the `rolesQuery` in order to adapt them to your application database structure.
 
 ### Configure the entire application's security domain when accessing protected resources (web and EJBs)
 
-Add the file `jboss-web.xml` inside your `/src/main/webapp/WEB-INF` directory in the
-**Web project**.
+Add the file `jboss-web.xml` inside your `/src/main/webapp/WEB-INF` directory in the **Web project**.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -467,10 +430,7 @@ Add the file `jboss-web.xml` inside your `/src/main/webapp/WEB-INF` directory in
 ```
 
 ### Using security
-Now you are able to use the declarative security via annotations in your EJBs,
-such as `@RolesAllowed`, `@DeclareRoles`, etc. In addition, you can do
-programmatic security by injecting the `SessionContext` in your EJB in order to
-implement security business logic. For example:
+Now you are able to use the declarative security via annotations in your EJBs, such as `@RolesAllowed`, `@DeclareRoles`, etc. In addition, you can do programmatic security by injecting the `SessionContext` in your EJB in order to implement security business logic. For example:
 
 ```java
 @Stateless
@@ -513,10 +473,7 @@ Create the file `/src/main/webapp/WEB-INF/web.xml` in order to enable REST.
 ```
 
 ### Security in REST
-We will implement a simple security mechanism: use basic HTTP authentication in
-those resources which need to know a 'logged' user. The resources you want to
-protect will depend on the design of your REST API. The server will authenticate
-these requests using the login module configured in wildfly previously.
+We will implement a simple security mechanism: use basic HTTP authentication in those resources which need to know a 'logged' user. The resources you want to protect will depend on the design of your REST API. The server will authenticate these requests using the login module configured in WildFly previously.
 
 For example, if we have these resources:
 - `/api/user` (registration and get user details)
@@ -528,13 +485,10 @@ For example, if we have these resources:
 We could do the following security scheme:
 
 - All requests to `/api/user/*` will be protected.
-- Requests to `/api/user` will be also protected, except for the method POST,
-which will be the *registration* point.
-- We will exclude the OPTIONS HTTP method from protection, because we will enable
-[CORS](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing) (see later).
+- Requests to `/api/user` will be also protected, except for the method POST, which will be the *registration* point.
+- We will exclude the OPTIONS HTTP method from protection, because we will enable [CORS](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing) (see later).
 
-Here you have an example for the `web.xml` file in order to protect your API behind
-HTTP basic authentication, following the aforementioned scheme.
+Here you have an example for the `web.xml` file in order to protect your API behind HTTP Basic Authentication, following the aforementioned scheme.
 
 ```xml
 <security-role>
@@ -573,8 +527,7 @@ HTTP basic authentication, following the aforementioned scheme.
 ```
 
 ### Task 1.
-Design your Rest API. Think in *resources* (user, user posts, user friends, etc) and
-*operations* in terms of HTTP methods (Creating=POST, Reading=GET, updating=PUT, deleting=DELETE).
+Design your Rest API. Think in *resources* (user, user posts, user friends, etc) and *operations* in terms of HTTP methods (Creating=POST, Reading=GET, updating=PUT, deleting=DELETE).
 
 ### Task 2.
 Implement your API Rest with JAX-RS. You have to add these REST functions:
@@ -583,12 +536,10 @@ Implement your API Rest with JAX-RS. You have to add these REST functions:
 - Request another users friendship (from authenticated user to another user).
 - Get friendships requests (friendships made to the authenticated user).
 - Accept friendship request (made to the authenticated user).
-- Get my wall posts (which are the authenticated user posts, as well as his friends
-posts). Results should include likes to each post.
+- Get my wall posts (which are the authenticated user posts, as well as his friends posts). Results should include likes to each post.
 - Get my posts (the authenticated user posts).
 - Like a given post (the authenticated user does the like).
-- Post normal text, links and photos (you can make three different functions. 
-The author should be the authenticated user).
+- Post normal text, links and photos (you can make three different functions. The author should be the authenticated user).
 - Delete a post (only posts authored by the authenticated user).
 - Modify a post (only posts authored by the authenticated user can be edited).
 
@@ -596,14 +547,9 @@ Follow these rules:
 
 - Use the package `es.uvigo.esei.dgss.exercises.rest` in the **Web project**.
 - Use the EJBs (`UserEJB` and `PostEJB`) previously implemented.
-- Implement security business logic in the EJBs, not in the REST. Try to Keep
-the REST API as simple as possible. Remember that the main responsibility of the
-REST API is to capture HTTP requests, delegate immediately in the business layer
-(i.e. EJBs) and build the HTTP response.
+- Implement security business logic in the EJBs, not in the REST. Try to Keep the REST API as simple as possible. Remember that the main responsibility of the REST API is to capture HTTP requests, delegate immediately in the business layer (i.e. EJBs) and build the HTTP response.
 - Use `Response` as the return type of your REST methods.
-- For testing your API, you can use a browser plugin such as [RestClient](https://addons.mozilla.org/es/firefox/addon/restclient/)
-for Firefox, or [DHC](https://chrome.google.com/webstore/detail/dhc-resthttp-api-client/aejoelaoggembcahagimdiliamlcdmfm) for Chrome,
-or you can use a command line utility such as `curl`. For example:
+- For testing your API, you can use a browser plugin such as [RestClient](https://addons.mozilla.org/es/firefox/addon/restclient/) for Firefox, or [DHC](https://chrome.google.com/webstore/detail/dhc-resthttp-api-client/aejoelaoggembcahagimdiliamlcdmfm) for Chrome, or you can use a command line utility such as `curl`. For example:
 
 ```bash
 # do a POST with JSON data with curl
@@ -626,12 +572,12 @@ Dummy JSF page to see Facelets views (xhtml) and ManagedBeans integration.
 
 #### Setting environment+project
 
-We will employ WildFly 8.2 default JSF implementation (Mojarra 2.2.8), so there is no need to include JSF dependences in our maven configuration
+We will employ WildFly 8.2 default JSF implementation (Mojarra 2.2.8), so there is no need to include JSF dependences in our Maven configuration.
 
 
 ##### Declare FacesServlet in web.xml
 
-Add JSF Servlet configuration to `[src/main/webapp/WEB-INF/web.xml]`
+Add JSF Servlet configuration to `[src/main/webapp/WEB-INF/web.xml]`.
 ```xml
  <context-param>
         <param-name>javax.faces.PROJECT_STAGE</param-name>
@@ -654,7 +600,7 @@ Add JSF Servlet configuration to `[src/main/webapp/WEB-INF/web.xml]`
  </welcome-file-list>
 ```
 
-**NOTE:** In a container using Servlet version 3.0 or above this configuration step is not strictly mandatory (See [JSF 2.2 API Javadoc](https://javaserverfaces.java.net/nonav/docs/2.2/javadocs/index.html)) for more details)
+*Note*: in a container using Servlet version 3.0 or above this configuration step is not strictly mandatory (See [JSF 2.2 API Javadoc](https://javaserverfaces.java.net/nonav/docs/2.2/javadocs/index.html)) for more details)
 
 Facelet based JSF views (xhtml files) will be located at the web project root folder,`[/src/main/webapp/]`
 
@@ -662,7 +608,7 @@ Facelet based JSF views (xhtml files) will be located at the web project root fo
 
 **[Step 1]** Create a "backing bean" (JSF ManagedBean) to hold data and methods employed in this example.
 
-Create a package `[es.uvigo.esei.dgss.exercises.jsf.controllers]` into your Java source code folder to hold JSF managed beans.
+Create a package `es.uvigo.esei.dgss.exercises.jsf.controllers` into your Java source code folder to hold JSF managed beans.
 
 * __Alternative 1__ (to be deprecated): create a JSF native `@ManagedBean`
    1. Add a `TestController.java` file to `es.uvigo.esei.dgss.exercises.jsf.controllers` with the following class definition.
@@ -678,7 +624,7 @@ Create a package `[es.uvigo.esei.dgss.exercises.jsf.controllers]` into your Java
 * __Alternative 2__ (recommended): create a CDI Bean with `@Named` annotation
    1. PREVIOUS: Add CDI support to your Java EE application
 
-     Create an empty `[src/main/webapp/WEB-INF/beans.xml]` file. 
+     Create an empty `[src/main/webapp/WEB-INF/beans.xml]` file.
      Make sure `bean-discovery-mode` option is set to `"all"`.
 
      ```xml
@@ -764,30 +710,30 @@ public String doAddition() {
 
 After building and deploying your project, this JSF aplication will be available at URI  `http://localhost:8080/[project_name]` (use `web-0.0.1-SNAPSHOT` as project name in `bob-esi-solutions` project).
 
-ADDITIONAL TEST: Add an `Operation` class and a `List<Operation> operations` attribute to `TestController` in order to show a record of the performed operations.
+*Additional test*: add an `Operation` class and a `List<Operation> operations` attribute to `TestController` in order to show a record of the performed operations.
 
 ### Task 1
 Build a very simple JSF view to provide a basic `User` search interface.
 
 1. Query you service layer using the `String` provided by the user in the search Text Field.
-2. Retrieve and show the list of mathing `Users`.
-3. Once the user selects one of the mathing `Users`, show `User` profile information and the list of `Posts` writen by that `User`
+2. Retrieve and show the list of mating `Users`.
+3. Once the user selects one of the mathing `Users`, show `User` profile information and the list of `Posts` written by that `User`.
 
 Steps:
 
-* Sketch your view(s) and identify which attributes much  be included in your "backing bean"
+* Sketch your view(s) and identify which attributes much  be included in your "backing bean".
 * Create your "backing bean" and inject (with `@EJB` or `@Inject`) the EJB components from your Service Layer to deal with `User` search and with `Post` retrieval.
 
-  * **Note:** Maybe you will need to add new methods to `UserEJB` and `PostEJB` in order to support those funcitonalities
-  
-* Design you `xhtml` JSF view(s) using standard JSF components and simple interaction (no `<f:ajax>` interaction)
+  * *Note*: maybe you will need to add new methods to `UserEJB` and `PostEJB` in order to support those functionalities.
+
+* Design you `xhtml` JSF view(s) using standard JSF components and simple interaction (no `<f:ajax>` interaction).
 
 ### Task 2
 Improve the previous JSF view(s):
 
-1. Employ Primefaces or Bootfaces components instead of standard ones
+1. Employ Primefaces or Bootfaces components instead of standard ones.
 
-  **Note:** Add Primefaces or Bootfaces dependences to your web project `pom.xml`
+  *Note*: add Primefaces or Bootfaces dependences to your web project `pom.xml`
 ```xml
 <dependency>
   <groupId>org.primefaces</groupId>
@@ -804,242 +750,5 @@ or
 </dependency>
 ```
 
-2. Use JSF Templates to unify views and simplify `xhtml` contents
-3. Include AJAX interacions to avoid reloading full views: use JSF native AJAX support [`<f:ajax>`] or Primefaces/Bootfaces own AJAX engine
-
-## Exercise 5: AngularJS (Optional)
-
-**This exercise is optional. By doing it, your grading could be increased above the 100%**
-
-We will desing a client application of our REST API via [AngularJS](https://angularjs.org/).
-
-Before continuing, we will enable CORS in our server application, in order to allow
-AJAX requests from pages outside the server. This will allow us to test our Angular
-application locally, so we have no need to redeploy the server when we change the
-angular application files. So, in order to do that, we only have to create a 
-`ContainerResponseFilter` in our **Web Project** in our `es.uvigo.esei.dgss.exercises.rest`
-package.
-
-```java
-package es.uvigo.esei.dgss.exercises.rest;
-
-import java.io.IOException;
-
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.ext.Provider;
-
-@Provider
-public class CORSFilter implements ContainerResponseFilter {
-
-   @Override
-   public void filter(final ContainerRequestContext requestContext,
-                      final ContainerResponseContext cres) throws IOException {
-      cres.getHeaders().add("Access-Control-Allow-Origin", "*");
-      cres.getHeaders().add("Access-Control-Allow-Headers", "origin, content-type, accept, authorization");
-      cres.getHeaders().add("Access-Control-Allow-Credentials", "true");
-      cres.getHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
-      cres.getHeaders().add("Access-Control-Max-Age", "1209600");
-   }
-
-}
-```
-
-### Starting with angular
-
-Place your files inside your **Web project** in `src/main/webapp/angular`.
-
-The app will be a 'single-page' app, but by using [ngRoute](https://docs.angularjs.org/api/ngRoute)
-in order to simulate a 'multi-page', back button compatible site.
-
-We will start with the root HTML file, called `index.html`. Here is an example:
-
-```html
-<!DOCTYPE html>
-<html>
-
-	<head>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-  		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
-  		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-route.js"></script>
-  		
-  		<!-- app scripts -->
-  		<script src="scripts/app.js"></script>
-  		<script src="scripts/controller/homecontroller.js"></script>
-  		<script src="scripts/controller/otherpagecontroller.js"></script>
-  		<script src="scripts/service/userservice.js"></script>
-	</head>
-	
-	<body ng-app="socialnetApp">
-		<div><a ng-href="#/">homepage</a> | <a ng-href="#/otherpage">otherpage</a></div>
-		<hr>
-	    <div class="row" ng-view="">HERE IS THE VIEW (you should not see this!)</div>
-	    <hr>
-	    <div>FOOTER</div>
-	</body>
-
-</html>
-```
-
-You can see the scripts section in the `header` section of `index.html`. 
-
-- The `scripts/app.js` contain the application initialization and routes (multi-page) 
-definitions.
-- The `scripts/controller/*.js` contain your controllers code. Controllers gives data and
-react to events to and from the view pages. View pages will be placed in `views` folder
-- The `scripts/service/*.js` define services, which are reusable objects you can use 
-across your controllers or other services.
-
-Lets start with `scripts/app.js`
-
-```javascript
-// create the angularjs application
-
-var app = angular.module('socialnetApp', ['ngRoute']);
-
-app.config(['$routeProvider', function($routeProvider) {
-	
-	$routeProvider
-	.when('/',{
-		templateUrl: 'views/home.html',
-		controller: 'HomeController'
-	})
-	.when('/otherpage',{
-		templateUrl: 'views/otherpage.html',
-		controller: 'OtherPageController'
-	})
-	.otherwise({
-		redirectTo: '/'
-	});
-}]);
-```
-
-Here, we define two routes, with the associated view html page and the corresponding
-controller.
-
-Lets see the code of the `HomeController` (defined in 
-`scripts/controller/homecontroller.js`).
-
-```javascript
-// retrieve the current app
-var app = angular.module('socialnetApp');
-
-// add a new controller
-app.controller('HomeController', ['userService', '$scope', function(userService, $scope){
-	
-	
-	$scope.users = [];
-	
-	userService.getUsers(function(users){
-		$scope.users = users;
-	},
-	function(response){
-		alert("error retrieving users")
-	});
-	
-	
-}]);
-```
-
-Here, you can see, the controller defines a 'scope' variable (`users`) which
-will be iterated in the view (`views/home.html`).
-
-In order to obtain the $scope.user array, we will call a service defined by us:
-the `userService` service. This service defines the `getUsers(onSuccess_callback,
-onError_callback)` function, where users can be retrieved.
-
-Lets see this service (`scripts/service/userservice.js`):
-
-```javascript
-angular.module('socialnetApp')
-.factory('userService', ['$http', function($http){
-	
-	return {
-		getUsers: function(onSuccess, onFail) {
-			//configure http auth 
-			$http.defaults.headers.common.Authorization =
-			    'Basic '+btoa('dgpena:dgpena');
-			
-			$http.get('http://localhost:8080/web-0.0.1-SNAPSHOT/api/user')
-			.success(onSuccess)
-			.error(onFail);
-		}
-	}
-}]);
-```
-
-The service, uses the `$http` angular object, which allow us to generate HTTP
-requests to the backend and obtain the results via callback functions defined by
-us. Here we define the `getUsers` function receiving this two callbacks that will
-be passed to the $http.get function as well. When the results arrive, they will be
-passed by invoking the `onSuccess(data)` callback, which were defined in the 
-controlled previously defined.
-
-In addition, here we see how to authenticate our requests by adding the HTTP basic 
-auth header for a specific username/password.
-
-Finally, we can see the view to show the users (`/views/home.html`):
-
-```html
-WELCOME TO THE HOME<br>
-
-<h1>Users</h1>
-<div ng-repeat="user in users">
-	login: {{user.login}}
-</div>
-
-```
-Here you can see the iteration via the `ng-repeat` attribute, which will repeat
-the `div` element per each user. Inside the element, we display the user login,
-by using the special `{{ expression }}` angular expression delimiters.
-
-Finally, lets see another route, the `views/otherpage.html` with its controller
-`scripts/controller/otherpagecontroller.js`.
-
-```html
-The $scope.value is: {{value}}<br>
-The count is: {{count}}<br>
-<button ng-click="increaseCount()">click me</button>
-<hr>
-Type here your name: <input type="text" ng-model="yourname" />
-<hr>
-<span ng-show="yourname.length>0">Hi {{yourname}}</span>
-
-```
-
-```javascript
-// retrieve the current app
-var app = angular.module('socialnetApp');
-
-// add a new controller
-app.controller('OtherPageController', ['$scope', function($scope){
-	// controller implementation
-	
-	$scope.value = 'a scope value';
-	$scope.count = 0;
-	
-	$scope.increaseCount = function() {
-		$scope.count = $scope.count + 1;
-	}
-}]);
-```
-
-In this example, you can see:
-- How binding works (by binding `$scope.yourname` to a input box and displaying
-it at the same time inside a `span` element, which will only be shown if the
-`$scope.yourname` variable contains some text.
-- Attend to a click in a button in order to increase the `$scope.count` variable.
-
-### Task 1
-
-Implement the following functionalities in Angular:
-
-- Register new user (optional with avatar) (10%).
-- Login (10%). This can be accomplished by calling the backend to any authenticated
-function and, if it does not return 401, you can assume that the user credentials are ok.
-- Get user's wall (30%)
-- Post a simple text post (30%)
-- Add like to post (20%)
-
-
+2. Use JSF Templates to unify views and simplify `xhtml` contents.
+3. Include AJAX interacions to avoid reloading full views: use JSF native AJAX support (`<f:ajax>`) or Primefaces/Bootfaces own AJAX engine.
