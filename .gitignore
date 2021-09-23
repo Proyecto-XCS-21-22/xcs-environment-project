@@ -2,6 +2,7 @@
 .settings
 .project
 .classpath
+bin
 
 #IntelliJ Idea
 .idea
