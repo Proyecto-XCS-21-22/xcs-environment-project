@@ -23,14 +23,12 @@ public class Friendship implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@ManyToOne
-	@Column(nullable = false)
+	@ManyToOne(optional = false)
 	@NotNull
 	private User sender;
 
 	@Id
-	@ManyToOne
-	@Column(nullable = false)
+	@ManyToOne(optional = false)
 	@NotNull
 	private User receiver;
 

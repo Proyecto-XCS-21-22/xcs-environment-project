@@ -38,12 +38,10 @@ public abstract class Post implements Serializable {
 	private Date date;
 
 	@ManyToOne(optional = false, cascade = CascadeType.ALL)
-	@Column(nullable = false)
 	@NotNull
 	private User author;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "post", orphanRemoval = true)
-	@Column(nullable = false)
 	@NotNull
 	private Set<Comment> comments;
 

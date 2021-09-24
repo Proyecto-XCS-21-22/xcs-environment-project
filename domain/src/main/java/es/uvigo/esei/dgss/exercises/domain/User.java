@@ -21,8 +21,8 @@ public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(length = 32)
-	@NotNull @Size(min = 1, max = 32)
+	@Column(length = 64)
+	@NotNull @Size(min = 1, max = 64)
 	private String login;
 
 	@Column(length = 64)

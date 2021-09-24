@@ -15,6 +15,8 @@ public class Photo extends Post {
 	@NotNull
 	private byte[] content;
 
+	protected Photo() {}
+
 	public Photo(User author, byte[] content) {
 		super(author);
 

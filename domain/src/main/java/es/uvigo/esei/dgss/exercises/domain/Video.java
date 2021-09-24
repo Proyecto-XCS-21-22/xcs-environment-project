@@ -16,6 +16,8 @@ public class Video extends Post {
 	@NotNull
 	private Duration duration;
 
+	protected Video() {}
+
 	public Video(User author, Duration duration) {
 		super(author);
 

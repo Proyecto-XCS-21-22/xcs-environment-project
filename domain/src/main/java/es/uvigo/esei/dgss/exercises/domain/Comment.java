@@ -27,7 +27,7 @@ public class Comment implements Serializable {
 	private long id;
 
 	@Column(nullable = false)
-	@NotNull @Size(min = 1)
+	@NotNull @Size(min = 1, max = 1024)
 	private String comment;
 
 	@Column(nullable = false)

@@ -16,6 +16,8 @@ public class Link extends Post {
 	@NotNull
 	private URL url;
 
+	protected Link() {}
+
 	public Link(User author, URL url) {
 		super(author);
 
