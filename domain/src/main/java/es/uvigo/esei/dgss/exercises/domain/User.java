@@ -25,11 +25,14 @@ public class User implements Serializable {
 	@NotNull @Size(min = 1, max = 32)
 	private String login;
 
+	@Column(length = 64)
+	@Size(min = 1, max = 64)
+	private String name;
+
 	@Column(nullable = false, length = 64)
 	@NotNull @Size(min = 8, max = 64)
 	private String password;
 
-	@Column(nullable = false)
 	@Size(max = 2 * 1024 * 1024)
 	private byte[] picture;
 
@@ -56,12 +59,20 @@ public class User implements Serializable {
 		return login;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public String getPassword() {
 		return password;
 	}
 
 	public void setPassword(String password) {
-		this.password = password;
+		this.password = Objects.requireNonNull(password);
 	}
 
 	public byte[] getPicture() {
