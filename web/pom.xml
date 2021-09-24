@@ -28,7 +28,7 @@
 			<artifactId>service</artifactId>
 		</dependency>
 
-		<!-- The presentation and domain layers are coupled for now -->
+		<!-- TODO: the presentation and domain layers are coupled for now -->
 		<dependency>
 			<groupId>es.uvigo.esei.dgss</groupId>
 			<artifactId>domain</artifactId>
