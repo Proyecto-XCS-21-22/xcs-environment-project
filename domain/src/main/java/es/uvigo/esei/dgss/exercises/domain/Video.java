@@ -35,6 +35,6 @@ public class Video extends Post {
 	}
 
 	public void setDuration(Duration duration) {
-		this.duration = duration;
+		this.duration = Objects.requireNonNull(duration);
 	}
 }
