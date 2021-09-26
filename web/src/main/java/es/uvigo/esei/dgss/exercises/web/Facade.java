@@ -30,4 +30,10 @@ public class Facade {
 
 		return friendship;
 	}
+
+	public User getUser(String login) {
+		return em.createQuery("SELECT u FROM User u WHERE u.login = ?1", User.class)
+			.setParameter(1, login)
+			.getSingleResult();
+	}
 }

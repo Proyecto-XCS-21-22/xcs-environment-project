@@ -87,10 +87,18 @@ public class User implements Serializable {
 		return posts;
 	}
 
+	public Collection<Friendship> getSentFriendships() {
+		return sentFriendships;
+	}
+
+	public Collection<Friendship> getReceivedFriendships() {
+		return receivedFriendships;
+	}
+
 	public Collection<User> getFriends() {
 		return Stream.concat(
-			sentFriendships.parallelStream().map((Friendship f) -> f.getReceiver()),
-			receivedFriendships.parallelStream().map((Friendship f) -> f.getSender())
+			getSentFriendships().stream().map((Friendship f) -> f.getReceiver()),
+			getReceivedFriendships().stream().map((Friendship f) -> f.getSender())
 		).collect(Collectors.toSet());
 	}
 
