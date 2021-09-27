@@ -37,17 +37,22 @@ public class Comment implements Serializable {
 
 	@ManyToOne(optional = false, cascade = CascadeType.ALL)
 	@NotNull
+	private User author;
+
+	@ManyToOne(optional = false, cascade = CascadeType.ALL)
+	@NotNull
 	private Post post;
 
 	protected Comment() {}
 
-	public Comment(String comment, Post post) {
-		this(comment, Date.from(Instant.now()), post);
+	public Comment(String comment, User author, Post post) {
+		this(comment, Date.from(Instant.now()), author, post);
 	}
 
-	public Comment(String comment, Date date, Post post) {
+	public Comment(String comment, Date date, User author, Post post) {
 		this.comment = Objects.requireNonNull(comment);
 		this.date = Objects.requireNonNull(date);
+		this.author = Objects.requireNonNull(author);
 		this.post = Objects.requireNonNull(post);
 	}
 
@@ -65,6 +70,10 @@ public class Comment implements Serializable {
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	public User getAuthor() {
+		return author;
 	}
 
 	public Post getPost() {

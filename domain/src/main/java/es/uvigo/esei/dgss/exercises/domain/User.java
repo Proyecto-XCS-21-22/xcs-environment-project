@@ -25,8 +25,8 @@ public class User implements Serializable {
 	@NotNull @Size(min = 1, max = 64)
 	private String login;
 
-	@Column(length = 64)
-	@Size(min = 1, max = 64)
+	@Column(nullable = false, length = 64)
+	@NotNull @Size(min = 1, max = 64)
 	private String name;
 
 	@Column(nullable = false, length = 64)
@@ -38,6 +38,9 @@ public class User implements Serializable {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "author", orphanRemoval = true)
 	private Set<Post> posts;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "author", orphanRemoval = true)
+	private Set<Comment> comments;
 
 	@ManyToMany(cascade = CascadeType.ALL)
 	private Set<Post> likedPosts;
@@ -85,6 +88,10 @@ public class User implements Serializable {
 
 	public Collection<Post> getPosts() {
 		return posts;
+	}
+
+	public Collection<Comment> getComments() {
+		return comments;
 	}
 
 	public Collection<Friendship> getSentFriendships() {
