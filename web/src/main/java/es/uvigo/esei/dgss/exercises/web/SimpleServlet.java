@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.inject.Inject;
+import javax.mail.internet.InternetAddress;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.annotation.MultipartConfig;
@@ -28,6 +29,8 @@ import javax.transaction.UserTransaction;
 import es.uvigo.esei.dgss.exercises.domain.Photo;
 import es.uvigo.esei.dgss.exercises.domain.Post;
 import es.uvigo.esei.dgss.exercises.domain.User;
+import es.uvigo.esei.dgss.exercises.service.EmailService;
+import es.uvigo.esei.dgss.exercises.service.UserEJB;
 
 @WebServlet("/SimpleServlet")
 @MultipartConfig
@@ -36,6 +39,12 @@ public class SimpleServlet extends HttpServlet {
 
 	@Inject
 	private Facade facade;
+
+	@Inject
+	private UserEJB users;
+
+	@Inject
+	private EmailService email;
 
 	@Resource
 	private UserTransaction transaction;
@@ -58,8 +67,10 @@ public class SimpleServlet extends HttpServlet {
 			+ "<input id='1_login' name='login' size='64' minlength='1' maxlength='64' required>"
 			+ "<label for='1_name'>Name:</label>"
 			+ "<input id='1_name' name='name' size='64' minlength='1' maxlength='64' required>"
+			+ "<label for='1_email'>E-mail:</label>"
+			+ "<input id='1_email' name='email' minlength='1' required>"
 			+ "<label for='1_password'>Password:</label>"
-			+ "<input id='1_password' name='password' size='64' minlength='8' maxlength='64' required>"
+			+ "<input id='1_password' name='password' size='64' minlength='8' required>"
 			+ "<label for='1_picture'>Picture:</label>"
 			+ "<input id='1_picture' name='picture' type='file' accept='image/*'>"
 			+ "<button type='submit' name='task' value='1'>Task 1. Create User</button>" +
@@ -128,6 +139,14 @@ public class SimpleServlet extends HttpServlet {
 			"</form>"
 		);
 
+		writer.println(
+			"<form method='POST'>"
+			+ "<label for='9_login'>User login:</label>"
+			+ "<input id='9_login' name='login' size='64' minlength='1' maxlength='64' required>"
+			+ "<button type='submit' name='task' value='9'>Test 1. Test e-mail</button>" +
+			"</form>"
+		);
+
 		writer.println("</body>");
 		writer.println("</html>");
 	}
@@ -163,6 +182,9 @@ public class SimpleServlet extends HttpServlet {
 			case "8":
 				task8(req, resp, writer);
 				break;
+			case "9":
+				testEmail(req, resp, writer);
+				break;
 		}
 
 		writer.println("</body></html>");
@@ -172,6 +194,7 @@ public class SimpleServlet extends HttpServlet {
 		try {
 			String login = req.getParameter("login");
 			String name = req.getParameter("name");
+			InternetAddress email = new InternetAddress(req.getParameter("email"));
 			String password = req.getParameter("password");
 
 			Part picture = req.getPart("picture");
@@ -191,7 +214,7 @@ public class SimpleServlet extends HttpServlet {
 			transaction.begin();
 
 			// Task 2.1
-			User u = facade.addUser(login, name, password, pictureData);
+			User u = users.add(login, name, email, password, pictureData);
 			writer.println("<p>User " + u.getLogin() + " created successfully</p>");
 
 			writer.println("<a href='SimpleServlet'>Go to menu</a>");
@@ -212,9 +235,9 @@ public class SimpleServlet extends HttpServlet {
 			transaction.begin();
 
 			// Task 2.2
-			User u = facade.getUser(login1);
-			User v = facade.getUser(login2);
-			facade.addFriendship(u, v);
+			User u = users.get(login1);
+			User v = users.get(login2);
+			users.addFriendship(u, v);
 
 			writer.println("<p>Friendship from " + login1 + " to " + login2 + " created successfully</p>");
 
@@ -235,7 +258,7 @@ public class SimpleServlet extends HttpServlet {
 			transaction.begin();
 
 			// Task 2.3
-			String friendLogins = facade.getUser(login)
+			String friendLogins = users.get(login)
 				.getFriends().stream()
 				.map(
 					(User u) -> u.getLogin()
@@ -260,7 +283,7 @@ public class SimpleServlet extends HttpServlet {
 			transaction.begin();
 
 			// Task 2.4
-			String postIds = facade.getUser(login)
+			String postIds = users.get(login)
 				.getFriends().stream()
 				.flatMap(
 					(User u) -> u.getPosts().stream()
@@ -369,7 +392,7 @@ public class SimpleServlet extends HttpServlet {
 			transaction.begin();
 
 			// Task 2.8
-			User user = facade.getUser(login);
+			User user = users.get(login);
 			Collection<User> friends = user.getFriends();
 
 			writer.print("<p>Potential friends for " + login + ":</p><ul>");
@@ -409,6 +432,31 @@ public class SimpleServlet extends HttpServlet {
 			}
 
 			writer.println("</ul>");
+
+			writer.println("<a href='SimpleServlet'>Go to menu</a>");
+
+			transaction.commit();
+		} catch (Exception exc) {
+			// XXX: because this is not a production environment, wrapping this in a checked
+			// exception is a concise way of bringing attention to any error that happens
+			throw new ServletException(exc);
+		}
+	}
+
+	private void testEmail(HttpServletRequest req, HttpServletResponse resp, PrintWriter writer) throws ServletException {
+		try {
+			String login = req.getParameter("login");
+
+			transaction.begin();
+
+			// Email test
+			User u = users.get(login);
+
+			if (!email.sendEmail(u, "Test message", "Hello, " + u.getLogin() + "!").get()) {
+				throw new RuntimeException("Error sending e-mail");
+			}
+
+			writer.println("<p>Email sent to " + login + "</p>");
 
 			writer.println("<a href='SimpleServlet'>Go to menu</a>");
 

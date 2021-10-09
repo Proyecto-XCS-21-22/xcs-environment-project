@@ -54,6 +54,10 @@ public class Comment implements Serializable {
 		this.date = Objects.requireNonNull(date);
 		this.author = Objects.requireNonNull(author);
 		this.post = Objects.requireNonNull(post);
+
+		// See comment in a Post constructor about leaking this
+		post.addComment(this);
+		author.addComment(this);
 	}
 
 	public String getComment() {

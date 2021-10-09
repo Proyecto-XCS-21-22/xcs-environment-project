@@ -7,7 +7,6 @@ import javax.enterprise.context.Dependent;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import es.uvigo.esei.dgss.exercises.domain.Friendship;
 import es.uvigo.esei.dgss.exercises.domain.Photo;
 import es.uvigo.esei.dgss.exercises.domain.Post;
 import es.uvigo.esei.dgss.exercises.domain.User;
@@ -16,31 +15,6 @@ import es.uvigo.esei.dgss.exercises.domain.User;
 public class Facade {
 	@PersistenceContext
 	private EntityManager em;
-
-	public User addUser(String login, String name, String password, byte[] picture) {
-		User user = new User(login, password);
-
-		user.setName(name);
-		user.setPicture(picture);
-
-		em.persist(user);
-
-		return user;
-	}
-
-	public Friendship addFriendship(User sender, User receiver) {
-		Friendship friendship = new Friendship(sender, receiver);
-
-		em.persist(friendship);
-
-		return friendship;
-	}
-
-	public User getUser(String login) {
-		return em.createQuery("SELECT u FROM User u WHERE u.login = ?1", User.class)
-			.setParameter(1, login)
-			.getSingleResult();
-	}
 
 	public Collection<Post> getPostsCommentedByFriendsAfterDate(String login, Date date) {
 		// TODO: test that this query yields the expected results

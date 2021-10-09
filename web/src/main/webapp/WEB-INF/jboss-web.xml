@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-web>
+	<!-- This domain is configured to use the de.rtner.security.auth.spi.SaltedDatabaseServerLoginModule -->
+	<!-- login module from https://repo1.maven.org/maven2/de/rtner/PBKDF2/1.1.4/PBKDF2-1.1.4.jar -->
+    <security-domain>dgss-security-domain</security-domain>
+</jboss-web>

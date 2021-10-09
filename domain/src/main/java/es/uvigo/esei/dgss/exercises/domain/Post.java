@@ -3,6 +3,7 @@ package es.uvigo.esei.dgss.exercises.domain;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
@@ -57,6 +58,18 @@ public abstract class Post implements Serializable {
 	protected Post(Date date, User author) {
 		this.date = Objects.requireNonNull(date);
 		this.author = Objects.requireNonNull(author);
+
+		// We are leaking this during its constructor. This is usually a bad idea
+		// in multithread contexts for objects that have final fields. However,
+		// we trust this package-private method to do not pass this to other
+		// threads, and this class does not contain final fields. It is also not
+		// feasible that the User object is used in another thread, as JPA does
+		// not require entities to be thread-safe (both the entity manager and
+		// persistence context are not), and as such that would be broken anyway.
+		// This leaking also allows for a simpler client API, and guarantees that
+		// posts always have a non-null author.
+		// See the Java Language Specification (JLS), section 17.5, for more details
+		author.createPost(this);
 	}
 
 	public long getId() {
@@ -72,11 +85,19 @@ public abstract class Post implements Serializable {
 	}
 
 	public Collection<Comment> getComments() {
-		return comments;
+		return Collections.unmodifiableSet(comments);
 	}
 
 	public Collection<User> getLikes() {
-		return likes;
+		return Collections.unmodifiableSet(likes);
+	}
+
+	void addLike(User user) {
+		likes.add(user);
+	}
+
+	void addComment(Comment comment) {
+		comments.add(comment);
 	}
 
 	@Override
