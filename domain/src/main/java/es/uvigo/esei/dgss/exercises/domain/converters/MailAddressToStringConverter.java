@@ -15,7 +15,7 @@ public class MailAddressToStringConverter implements AttributeConverter<Internet
 	@Override
 	public InternetAddress convertToEntityAttribute(String dbData) {
 		try {
-			return new InternetAddress(dbData);
+			return new InternetAddress(dbData, true);
 		} catch (AddressException exc) {
 			// The JPA converter API does not specify how to handle conversion
 			// errors, so this should do as a better design than just returning

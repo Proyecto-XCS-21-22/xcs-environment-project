@@ -64,11 +64,11 @@ public class SimpleServlet extends HttpServlet {
 		writer.println(
 			"<form method='POST' enctype='multipart/form-data'>"
 			+ "<label for='1_login'>Login:</label>"
-			+ "<input id='1_login' name='login' size='64' minlength='1' maxlength='64' required>"
+			+ "<input id='1_login' name='login' size='64' maxlength='64' required>"
 			+ "<label for='1_name'>Name:</label>"
-			+ "<input id='1_name' name='name' size='64' minlength='1' maxlength='64' required>"
+			+ "<input id='1_name' name='name' size='64' maxlength='64' required>"
 			+ "<label for='1_email'>E-mail:</label>"
-			+ "<input id='1_email' name='email' minlength='1' required>"
+			+ "<input id='1_email' name='email' type='email' size='64' required>"
 			+ "<label for='1_password'>Password:</label>"
 			+ "<input id='1_password' name='password' size='64' minlength='8' required>"
 			+ "<label for='1_picture'>Picture:</label>"
@@ -80,9 +80,9 @@ public class SimpleServlet extends HttpServlet {
 		writer.println(
 			"<form method='POST'>"
 			+ "<label for='2_login1'>Sender login:</label>"
-			+ "<input id='2_login1' name='login1' size='64' minlength='1' maxlength='64' required>"
+			+ "<input id='2_login1' name='login1' size='64' maxlength='64' required>"
 			+ "<label for='2_login2'>Receiver login:</label>"
-			+ "<input id='2_login2' name='login2' size='64' minlength='1' maxlength='64' required>"
+			+ "<input id='2_login2' name='login2' size='64' maxlength='64' required>"
 			+ "<button type='submit' name='task' value='2'>Task 2. Create Friendship</button>" +
 			"</form>"
 		);
@@ -90,7 +90,7 @@ public class SimpleServlet extends HttpServlet {
 		writer.println(
 			"<form method='POST'>"
 			+ "<label for='3_login'>User login:</label>"
-			+ "<input id='3_login' name='login' size='64' minlength='1' maxlength='64' required>"
+			+ "<input id='3_login' name='login' size='64' maxlength='64' required>"
 			+ "<button type='submit' name='task' value='3'>Task 3. Get All Friends</button>" +
 			"</form>"
 		);
@@ -98,7 +98,7 @@ public class SimpleServlet extends HttpServlet {
 		writer.println(
 			"<form method='POST'>"
 			+ "<label for='4_login'>User login:</label>"
-			+ "<input id='4_login' name='login' size='64' minlength='1' maxlength='64' required>"
+			+ "<input id='4_login' name='login' size='64' maxlength='64' required>"
 			+ "<button type='submit' name='task' value='4'>Task 4. Get Posts of Friends</button>" +
 			"</form>"
 		);
@@ -106,7 +106,7 @@ public class SimpleServlet extends HttpServlet {
 		writer.println(
 			"<form method='POST'>"
 			+ "<label for='5_login'>User login:</label>"
-			+ "<input id='5_login' name='login' size='64' minlength='1' maxlength='64' required>"
+			+ "<input id='5_login' name='login' size='64' maxlength='64' required>"
 			+ "<label for='5_date'>Date:</label>"
 			+ "<input id='5_date' name='date' type='date' required>"
 			+ "<button type='submit' name='task' value='5'>Task 5. Get Posts Commented by Friends after Date</button>" +
@@ -116,7 +116,7 @@ public class SimpleServlet extends HttpServlet {
 		writer.println(
 			"<form method='POST'>"
 			+ "<label for='6_login'>User login:</label>"
-			+ "<input id='6_login' name='login' size='64' minlength='1' maxlength='64' required>"
+			+ "<input id='6_login' name='login' size='64' maxlength='64' required>"
 			+ "<label for='6_postId'>Post ID:</label>"
 			+ "<input id='6_postId' name='postId' type='number' required>"
 			+ "<button type='submit' name='task' value='6'>Task 6. Get Friends of User Who Like a Post</button>" +
@@ -126,7 +126,7 @@ public class SimpleServlet extends HttpServlet {
 		writer.println(
 			"<form method='POST'>"
 			+ "<label for='7_login'>User login:</label>"
-			+ "<input id='7_login' name='login' size='64' minlength='1' maxlength='64' required>"
+			+ "<input id='7_login' name='login' size='64' maxlength='64' required>"
 			+ "<button type='submit' name='task' value='7'>Task 7. Get Pictures Liked by User</button>" +
 			"</form>"
 		);
@@ -134,7 +134,7 @@ public class SimpleServlet extends HttpServlet {
 		writer.println(
 			"<form method='POST'>"
 			+ "<label for='8_login'>User login:</label>"
-			+ "<input id='8_login' name='login' size='64' minlength='1' maxlength='64' required>"
+			+ "<input id='8_login' name='login' size='64' maxlength='64' required>"
 			+ "<button type='submit' name='task' value='8'>Task 8. Get Potential Friends</button>" +
 			"</form>"
 		);
@@ -142,7 +142,7 @@ public class SimpleServlet extends HttpServlet {
 		writer.println(
 			"<form method='POST'>"
 			+ "<label for='9_login'>User login:</label>"
-			+ "<input id='9_login' name='login' size='64' minlength='1' maxlength='64' required>"
+			+ "<input id='9_login' name='login' size='64' maxlength='64' required>"
 			+ "<button type='submit' name='task' value='9'>Test 1. Test e-mail</button>" +
 			"</form>"
 		);

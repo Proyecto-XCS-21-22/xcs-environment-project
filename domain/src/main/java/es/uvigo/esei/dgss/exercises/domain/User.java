@@ -9,6 +9,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -78,10 +79,16 @@ public class User implements Serializable {
 	protected User() {}
 
 	public User(String login, String name, InternetAddress email, String password) {
+		try {
+			email.validate();
+		} catch (final AddressException exc) {
+			throw new IllegalArgumentException(exc);
+		}
+
 		this.login = Objects.requireNonNull(login);
 		this.name = Objects.requireNonNull(name);
 		this.email = Objects.requireNonNull(email);
-		this.password = Objects.requireNonNull(PASSWORD_HASHER.apply(password));
+		this.password = PASSWORD_HASHER.apply(Objects.requireNonNull(password));
 	}
 
 	public String getLogin() {
@@ -97,7 +104,7 @@ public class User implements Serializable {
 	}
 
 	public void setPassword(String password) {
-		this.password = Objects.requireNonNull(PASSWORD_HASHER.apply(password));
+		this.password = PASSWORD_HASHER.apply(Objects.requireNonNull(password));
 	}
 
 	public InternetAddress getEmail() {
@@ -105,7 +112,13 @@ public class User implements Serializable {
 	}
 
 	public void setEmail(InternetAddress email) {
-		this.email = Objects.requireNonNull(email);
+		try {
+			email.validate();
+		} catch (final AddressException exc) {
+			throw new IllegalArgumentException(exc);
+		}
+
+		this.email = email;
 	}
 
 	public byte[] getPicture() {
