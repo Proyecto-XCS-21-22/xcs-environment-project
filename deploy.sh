@@ -1,4 +1,4 @@
 #!/bin/sh
-mvn clean install
+mvn install
 cd web
 mvn wildfly:deploy
