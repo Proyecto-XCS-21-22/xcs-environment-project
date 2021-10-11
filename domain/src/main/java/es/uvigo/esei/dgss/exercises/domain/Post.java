@@ -33,20 +33,20 @@ public abstract class Post implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable = false)
 	@NotNull @Past
 	private Date date;
 
-	@ManyToOne(optional = false, cascade = CascadeType.ALL)
+	@ManyToOne(optional = false, cascade = CascadeType.MERGE)
 	@NotNull
 	private User author;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "post", orphanRemoval = true)
+	@OneToMany(cascade = { CascadeType.MERGE, CascadeType.REMOVE }, mappedBy = "post", orphanRemoval = true)
 	@NotNull
 	private Set<Comment> comments;
 
-	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "likedPosts")
+	@ManyToMany(cascade = CascadeType.MERGE, mappedBy = "likedPosts")
 	private Set<User> likes;
 
 	protected Post() {}
@@ -58,18 +58,6 @@ public abstract class Post implements Serializable {
 	protected Post(Date date, User author) {
 		this.date = Objects.requireNonNull(date);
 		this.author = Objects.requireNonNull(author);
-
-		// We are leaking this during its constructor. This is usually a bad idea
-		// in multithread contexts for objects that have final fields. However,
-		// we trust this package-private method to do not pass this to other
-		// threads, and this class does not contain final fields. It is also not
-		// feasible that the User object is used in another thread, as JPA does
-		// not require entities to be thread-safe (both the entity manager and
-		// persistence context are not), and as such that would be broken anyway.
-		// This leaking also allows for a simpler client API, and guarantees that
-		// posts always have a non-null author.
-		// See the Java Language Specification (JLS), section 17.5, for more details
-		author.createPost(this);
 	}
 
 	public long getId() {
@@ -90,14 +78,6 @@ public abstract class Post implements Serializable {
 
 	public Collection<User> getLikes() {
 		return Collections.unmodifiableSet(likes);
-	}
-
-	void addLike(User user) {
-		likes.add(user);
-	}
-
-	void addComment(Comment comment) {
-		comments.add(comment);
 	}
 
 	@Override

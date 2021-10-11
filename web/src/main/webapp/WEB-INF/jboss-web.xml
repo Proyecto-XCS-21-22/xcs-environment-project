@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jboss-web>
 	<!-- This domain is configured to use the de.rtner.security.auth.spi.SaltedDatabaseServerLoginModule -->
-	<!-- login module from https://repo1.maven.org/maven2/de/rtner/PBKDF2/1.1.4/PBKDF2-1.1.4.jar -->
+	<!-- login module from https://repo1.maven.org/maven2/de/rtner/PBKDF2/1.1.4/PBKDF2-1.1.4.jar. -->
+	<!-- For configuration instructions, see: https://stackoverflow.com/questions/28788367/wildfly-randomly-salted-passwords-in-java-ee-application -->
     <security-domain>dgss-security-domain</security-domain>
 </jboss-web>

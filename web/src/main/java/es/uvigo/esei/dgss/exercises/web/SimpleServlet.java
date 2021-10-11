@@ -59,7 +59,7 @@ public class SimpleServlet extends HttpServlet {
 		writer.println("<style>label { display: block; } button { display: block; }</style>");
 		writer.println("</head>");
 		writer.println("<body>");
-		writer.println("<h1>Facade tests</h1>");
+		writer.println("<h1>Facade and e-mail tests</h1>");
 
 		writer.println(
 			"<form method='POST' enctype='multipart/form-data'>"
@@ -258,8 +258,8 @@ public class SimpleServlet extends HttpServlet {
 			transaction.begin();
 
 			// Task 2.3
-			String friendLogins = users.get(login)
-				.getFriends().stream()
+			String friendLogins = facade.getFriends(login)
+				.stream()
 				.map(
 					(User u) -> u.getLogin()
 				).collect(Collectors.joining(", "));
@@ -283,8 +283,8 @@ public class SimpleServlet extends HttpServlet {
 			transaction.begin();
 
 			// Task 2.4
-			String postIds = users.get(login)
-				.getFriends().stream()
+			String postIds = facade.getFriends(login)
+				.stream()
 				.flatMap(
 					(User u) -> u.getPosts().stream()
 				)
@@ -393,7 +393,7 @@ public class SimpleServlet extends HttpServlet {
 
 			// Task 2.8
 			User user = users.get(login);
-			Collection<User> friends = user.getFriends();
+			Collection<User> friends = facade.getFriends(login);
 
 			writer.print("<p>Potential friends for " + login + ":</p><ul>");
 
@@ -411,7 +411,7 @@ public class SimpleServlet extends HttpServlet {
 			//   algorithmic complexity (although if performance is a concern the
 			//   RDBMS can probably be set up to do a better job than the application).
 			for (User friend : friends) {
-				Collection<User> friendsOfFriend = friend.getFriends();
+				Collection<User> friendsOfFriend = facade.getFriends(friend.getLogin());
 
 				Iterator<User> potentialFriendIter = friendsOfFriend.iterator();
 				while (potentialFriendIter.hasNext()) {

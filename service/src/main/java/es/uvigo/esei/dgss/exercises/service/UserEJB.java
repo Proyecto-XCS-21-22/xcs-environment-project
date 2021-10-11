@@ -1,5 +1,9 @@
 package es.uvigo.esei.dgss.exercises.service;
 
+import java.util.Collection;
+
+import javax.annotation.Resource;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.mail.internet.InternetAddress;
@@ -14,6 +18,9 @@ import es.uvigo.esei.dgss.exercises.domain.User;
 public class UserEJB {
 	@PersistenceContext
 	private EntityManager em;
+
+	@Resource
+	private SessionContext ctx;
 
 	@Inject
 	private StatisticsEJB statistics;
@@ -38,15 +45,18 @@ public class UserEJB {
 		return em.find(User.class, login);
 	}
 
+	public User getCurrent() {
+		final User currentUser = get(getCurrentLogin());
+
+		if (currentUser == null) {
+			throw new IllegalArgumentException("Unable to find current user");
+		}
+
+		return currentUser;
+	}
+
 	public void delete(User user) {
-		em.remove(user);
-		em.flush();
-
-		// When a user is deleted, so they are the posts they made
-		int deletedPosts = user.getPosts().size();
-		statistics.decrementPostCountBy(deletedPosts);
-
-		statistics.decrementUserCount();
+		delete(user.getLogin());
 	}
 
 	public boolean delete(String login) {
@@ -64,16 +74,50 @@ public class UserEJB {
 		return deletedUsers > 0;
 	}
 
+	public Friendship addFriendship(String receiverLogin) {
+		final User sender = getCurrent();
+		final User receiver = get(receiverLogin);
+
+		if (receiver == null) {
+			throw new IllegalArgumentException("Unable to find receiver user");
+		}
+
+		return addFriendship(sender, receiver);
+	}
+
 	public Friendship addFriendship(User sender, User receiver) {
 		Friendship friendship = new Friendship(sender, receiver);
+
+		if (sender.getLogin().equals(receiver.getLogin())) {
+			throw new IllegalArgumentException(
+				"The receiver login must be not equal to the sender login"
+			);
+		}
 
 		em.persist(friendship);
 
 		return friendship;
 	}
 
+	public void setRequestedFriendshipAcceptedStatus(String senderLogin, boolean accepted) {
+		final String receiverLogin = getCurrentLogin();
+
+		final int modifiedFriendships = em.createQuery(
+				"UPDATE Friendship f SET f.accepted = :accepted WHERE " +
+				"f.sender.login = :senderLogin AND f.receiver.login = :receiverLogin"
+			)
+			.setParameter("accepted", accepted)
+			.setParameter("senderLogin", senderLogin)
+			.setParameter("receiverLogin", receiverLogin)
+			.executeUpdate();
+
+		if (modifiedFriendships < 1) {
+			throw new IllegalArgumentException("Unable to find friendship request");
+		}
+	}
+
 	public void likePost(User user, Post post) {
-		user.like(post);
+		user.likePost(post);
 		em.flush();
 
 		email.sendEmail(
@@ -81,5 +125,42 @@ public class UserEJB {
 			"Someone liked your post!",
 			user.getName() + " liked the post " + post.getId() + " that you made at " + post.getDate()
 		);
+	}
+
+	public Collection<Post> getAuthoredPosts(String login) {
+		if (ctx.isCallerInRole("admin") || login.equals(getCurrentLogin())) {
+			return em.createQuery(
+				"SELECT p FROM Post p WHERE p.author.login = :login",
+				Post.class
+			)
+			.setParameter("login", login)
+			.getResultList();
+		} else {
+			throw new IllegalArgumentException(
+				"Not enough permission to see posts other people posts"
+			);
+		}
+	}
+
+	public Collection<Post> getWallPosts() {
+		final String login = getCurrentLogin();
+
+		return em.createQuery(
+				"SELECT p FROM Post p WHERE " +
+				// The post was made by a friend
+				"p.author IN (SELECT f.receiver FROM Friendship f WHERE f.sender.login = :login AND f.accepted = true) OR " +
+				"p.author IN (SELECT f.sender FROM Friendship f WHERE f.receiver.login = :login AND f.accepted = true) OR " +
+				// The post was made by ourselves
+				"p.author.login = :login " +
+				// Recent posts first
+				"ORDER BY p.date DESC",
+				Post.class
+			)
+			.setParameter("login", login)
+			.getResultList();
+	}
+
+	private String getCurrentLogin() {
+		return ctx.getCallerPrincipal().getName();
 	}
 }

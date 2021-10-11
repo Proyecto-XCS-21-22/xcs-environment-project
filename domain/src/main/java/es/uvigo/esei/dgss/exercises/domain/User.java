@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -61,19 +59,23 @@ public class User implements Serializable {
 	@Size(max = 2 * 1024 * 1024)
 	private byte[] picture;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "author", orphanRemoval = true)
+	@Column(nullable = false)
+	@NotNull
+	private String role = "user";
+
+	@OneToMany(cascade = CascadeType.MERGE, mappedBy = "author")
 	private Set<Post> posts;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "author", orphanRemoval = true)
+	@OneToMany(cascade = { CascadeType.MERGE, CascadeType.REMOVE }, mappedBy = "author")
 	private Set<Comment> comments;
 
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.MERGE)
 	private Set<Post> likedPosts;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "sender", orphanRemoval = true)
+	@OneToMany(cascade = { CascadeType.MERGE, CascadeType.REMOVE }, mappedBy = "sender", orphanRemoval = true)
 	private Set<Friendship> sentFriendships;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "receiver", orphanRemoval = true)
+	@OneToMany(cascade = { CascadeType.MERGE, CascadeType.REMOVE }, mappedBy = "receiver", orphanRemoval = true)
 	private Set<Friendship> receivedFriendships;
 
 	protected User() {}
@@ -129,29 +131,19 @@ public class User implements Serializable {
 		this.picture = picture;
 	}
 
+	public String getRole() {
+		return role;
+	}
+
 	public Collection<Post> getPosts() {
 		return Collections.unmodifiableSet(posts);
 	}
-
-	public void createPost(Post post) {
-		posts.add(post);
-	}
-
 	public Collection<Post> getLikedPosts() {
 		return Collections.unmodifiableSet(likedPosts);
 	}
 
-	public void like(Post post) {
-		likedPosts.add(post);
-		post.addLike(this);
-	}
-
 	public Collection<Comment> getComments() {
 		return Collections.unmodifiableSet(comments);
-	}
-
-	void addComment(Comment comment) {
-		comments.add(comment);
 	}
 
 	public Collection<Friendship> getSentFriendships() {
@@ -162,11 +154,8 @@ public class User implements Serializable {
 		return Collections.unmodifiableSet(receivedFriendships);
 	}
 
-	public Collection<User> getFriends() {
-		return Collections.unmodifiableSet(Stream.concat(
-			getSentFriendships().stream().map((Friendship f) -> f.getReceiver()),
-			getReceivedFriendships().stream().map((Friendship f) -> f.getSender())
-		).collect(Collectors.toSet()));
+	public void likePost(Post post) {
+		likedPosts.add(post);
 	}
 
 	@Override

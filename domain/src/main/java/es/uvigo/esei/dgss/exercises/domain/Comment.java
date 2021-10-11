@@ -31,15 +31,15 @@ public class Comment implements Serializable {
 	private String comment;
 
 	@Column(nullable = false)
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@NotNull @Past
 	private Date date;
 
-	@ManyToOne(optional = false, cascade = CascadeType.ALL)
+	@ManyToOne(optional = false, cascade = CascadeType.MERGE)
 	@NotNull
 	private User author;
 
-	@ManyToOne(optional = false, cascade = CascadeType.ALL)
+	@ManyToOne(optional = false, cascade = CascadeType.MERGE)
 	@NotNull
 	private Post post;
 
@@ -54,10 +54,10 @@ public class Comment implements Serializable {
 		this.date = Objects.requireNonNull(date);
 		this.author = Objects.requireNonNull(author);
 		this.post = Objects.requireNonNull(post);
+	}
 
-		// See comment in a Post constructor about leaking this
-		post.addComment(this);
-		author.addComment(this);
+	public long getId() {
+		return id;
 	}
 
 	public String getComment() {

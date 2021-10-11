@@ -28,7 +28,7 @@
 			<artifactId>service</artifactId>
 		</dependency>
 
-		<!-- TODO: the presentation and domain layers are coupled for now -->
+		<!-- Facade depends on domain classes -->
 		<dependency>
 			<groupId>es.uvigo.esei.dgss</groupId>
 			<artifactId>domain</artifactId>

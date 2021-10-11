@@ -27,6 +27,7 @@ public class PostEJB {
 		final Link link = new Link(author, url);
 
 		em.persist(link);
+		em.flush();
 
 		statistics.incrementPostCount();
 
@@ -37,6 +38,7 @@ public class PostEJB {
 		final Video video = new Video(author, duration);
 
 		em.persist(video);
+		em.flush();
 
 		statistics.incrementPostCount();
 
@@ -47,6 +49,7 @@ public class PostEJB {
 		final Photo photo = new Photo(author, content);
 
 		em.persist(photo);
+		em.flush();
 
 		statistics.incrementPostCount();
 
@@ -58,9 +61,7 @@ public class PostEJB {
 	}
 
 	public void delete(Post post) {
-		em.remove(post);
-
-		statistics.decrementPostCount();
+		delete(post.getId());
 	}
 
 	public boolean delete(long id) {

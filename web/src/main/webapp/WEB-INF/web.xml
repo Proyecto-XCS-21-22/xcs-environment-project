@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+     http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+	version="3.1">
+
+	<!-- Root path for REST API -->
+	<servlet-mapping>
+		<servlet-name>javax.ws.rs.core.Application</servlet-name>
+		<url-pattern>/api/v1/*</url-pattern>
+	</servlet-mapping>
+
+	<security-role>
+		<role-name>admin</role-name>
+	</security-role>
+	<security-role>
+		<role-name>user</role-name>
+	</security-role>
+
+	<!-- Authentication requirements for /api/v1/users URLs -->
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>users_resource</web-resource-name>
+			<url-pattern>/api/v1/users</url-pattern>
+			<http-method-omission>OPTIONS</http-method-omission>
+			<http-method-omission>POST</http-method-omission>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>admin</role-name>
+			<role-name>user</role-name>
+		</auth-constraint>
+	</security-constraint>
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>users_subresources</web-resource-name>
+			<url-pattern>/api/v1/users/*</url-pattern>
+			<http-method-omission>OPTIONS</http-method-omission>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>admin</role-name>
+			<role-name>user</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<!-- Authentication requirements for /api/v1/friendships URLs -->
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>friendships_resource</web-resource-name>
+			<url-pattern>/api/v1/friendships</url-pattern>
+			<http-method-omission>OPTIONS</http-method-omission>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>admin</role-name>
+			<role-name>user</role-name>
+		</auth-constraint>
+	</security-constraint>
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>friendships_subresources</web-resource-name>
+			<url-pattern>/api/v1/friendships/*</url-pattern>
+			<http-method-omission>OPTIONS</http-method-omission>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>admin</role-name>
+			<role-name>user</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<!-- Authentication requirement for /api/v1/wall -->
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>wall_resource</web-resource-name>
+			<url-pattern>/api/v1/wall</url-pattern>
+			<http-method-omission>OPTIONS</http-method-omission>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>admin</role-name>
+			<role-name>user</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<!-- Authentication requirement for /api/v1/posts/* URLs -->
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>posts_subresources</web-resource-name>
+			<url-pattern>/api/v1/posts/*</url-pattern>
+			<http-method-omission>OPTIONS</http-method-omission>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>admin</role-name>
+			<role-name>user</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<login-config>
+		<auth-method>BASIC</auth-method>
+		<realm-name>default</realm-name>
+	</login-config>
+</web-app>

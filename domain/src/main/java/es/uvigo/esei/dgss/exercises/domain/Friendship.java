@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -28,33 +29,49 @@ public class Friendship implements Serializable {
 	private User sender;
 
 	@Id
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, cascade = CascadeType.MERGE)
 	@NotNull
 	private User receiver;
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable = false)
 	@NotNull
 	private Date date;
 
+	@Column(nullable = false)
+	private boolean accepted;
+
 	protected Friendship() {}
 
 	public Friendship(User sender, User receiver) {
-		this(sender, receiver, Date.from(Instant.now()));
+		this(sender, receiver, Date.from(Instant.now()), false);
 	}
 
-	public Friendship(User sender, User receiver, Date date) {
+	public Friendship(User sender, User receiver, Date date, boolean accepted) {
 		this.sender = Objects.requireNonNull(sender);
 		this.receiver = Objects.requireNonNull(receiver);
 		this.date = Objects.requireNonNull(date);
+		this.accepted = accepted;
 	}
 
-	public final User getSender() {
+	public User getSender() {
 		return sender;
 	}
 
-	public final User getReceiver() {
+	public User getReceiver() {
 		return receiver;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public boolean isAccepted() {
+		return accepted;
+	}
+
+	public void setAccepted(boolean accepted) {
+		this.accepted = accepted;
 	}
 
 	@Override
@@ -63,7 +80,8 @@ public class Friendship implements Serializable {
 
 		if (equal && this != obj) {
 			Friendship other = (Friendship) obj;
-			equal = Objects.equals(sender, other.sender) && Objects.equals(receiver, other.receiver);
+			equal = Objects.equals(sender, other.sender) &&
+				Objects.equals(receiver, other.receiver);
 		}
 
 		return equal;
@@ -86,7 +104,8 @@ public class Friendship implements Serializable {
 
 			if (equal && this != obj) {
 				CompositeKey other = (CompositeKey) obj;
-				equal = Objects.equals(sender, other.sender) && Objects.equals(receiver, other.receiver);
+				equal = Objects.equals(sender, other.sender) &&
+					Objects.equals(receiver, other.receiver);
 			}
 
 			return equal;
