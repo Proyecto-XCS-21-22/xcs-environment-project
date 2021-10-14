@@ -18,8 +18,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import es.uvigo.esei.dgss.exercises.domain.Friendship;
-import es.uvigo.esei.dgss.exercises.rest.dtos.FriendshipDTO;
-import es.uvigo.esei.dgss.exercises.rest.dtos.ListDTO;
+import es.uvigo.esei.dgss.exercises.rest.dto.FriendshipDTO;
+import es.uvigo.esei.dgss.exercises.rest.dto.ListDTO;
 import es.uvigo.esei.dgss.exercises.service.UserEJB;
 
 @Path("/friendships")

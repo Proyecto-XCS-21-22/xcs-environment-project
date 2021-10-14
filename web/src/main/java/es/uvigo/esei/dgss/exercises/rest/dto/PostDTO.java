@@ -1,7 +1,7 @@
-package es.uvigo.esei.dgss.exercises.rest.dtos;
+package es.uvigo.esei.dgss.exercises.rest.dto;
 
-import static es.uvigo.esei.dgss.exercises.rest.dtos.Constants.DATE_FORMATTER;
-import static es.uvigo.esei.dgss.exercises.rest.dtos.Constants.USER_RESOURCE;
+import static es.uvigo.esei.dgss.exercises.rest.dto.Constants.DATE_FORMATTER;
+import static es.uvigo.esei.dgss.exercises.rest.dto.Constants.USER_RESOURCE;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,7 +17,7 @@ import es.uvigo.esei.dgss.exercises.domain.Video;
 public abstract class PostDTO {
 	private long id;
 	private String date;
-	private String authorResource;
+	private String author;
 	private List<CommentDTO> comments;
 	private int likes;
 
@@ -71,12 +71,12 @@ public abstract class PostDTO {
 		this.date = date;
 	}
 
-	public String getAuthorResource() {
-		return authorResource;
+	public String getAuthor() {
+		return author;
 	}
 
-	public void setAuthorResource(String authorResource) {
-		this.authorResource = authorResource;
+	public void setAuthor(String author) {
+		this.author = author;
 	}
 
 	public List<CommentDTO> getComments() {
@@ -98,7 +98,7 @@ public abstract class PostDTO {
 	private static void initializeBaseDTOFields(PostDTO dto, Post post, UriBuilder baseUsersUri) {
 		dto.setId(post.getId());
 		dto.setDate(DATE_FORMATTER.apply(post.getDate()));
-		dto.setAuthorResource(USER_RESOURCE.apply(post.getAuthor(), baseUsersUri));
+		dto.setAuthor(USER_RESOURCE.apply(post.getAuthor(), baseUsersUri));
 		dto.setComments(post.getComments().stream().map(
 			(Comment c) -> CommentDTO.of(c, baseUsersUri)
 		).collect(Collectors.toList()));

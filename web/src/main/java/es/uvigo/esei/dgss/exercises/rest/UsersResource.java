@@ -18,10 +18,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import es.uvigo.esei.dgss.exercises.domain.Post;
-import es.uvigo.esei.dgss.exercises.rest.dtos.ListDTO;
-import es.uvigo.esei.dgss.exercises.rest.dtos.PostDTO;
-import es.uvigo.esei.dgss.exercises.rest.dtos.UserDTO;
-import es.uvigo.esei.dgss.exercises.rest.dtos.UserRegistrationDTO;
+import es.uvigo.esei.dgss.exercises.rest.dto.ListDTO;
+import es.uvigo.esei.dgss.exercises.rest.dto.PostDTO;
+import es.uvigo.esei.dgss.exercises.rest.dto.UserDTO;
+import es.uvigo.esei.dgss.exercises.rest.dto.UserRegistrationDTO;
 import es.uvigo.esei.dgss.exercises.service.UserEJB;
 
 @Path("/users")
@@ -35,16 +35,16 @@ public class UsersResource {
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response add(UserRegistrationDTO u) {
-		if (u == null) {
+	public Response add(UserRegistrationDTO registrationDto) {
+		if (registrationDto == null) {
 			throw new IllegalArgumentException("No data provided");
 		}
 
 		try {
 			users.add(
-				u.getLogin(), u.getName(),
-				new InternetAddress(u.getEmail()),
-				u.getPassword(), u.getPicture()
+				registrationDto.getLogin(), registrationDto.getName(),
+				new InternetAddress(registrationDto.getEmail()),
+				registrationDto.getPassword(), registrationDto.getPicture()
 			);
 		} catch (final AddressException exc) {
 			throw new IllegalArgumentException(exc);
@@ -52,7 +52,7 @@ public class UsersResource {
 
 		return Response.created(
 			uriInfo.getAbsolutePathBuilder()
-				.path(u.getLogin())
+				.path(registrationDto.getLogin())
 				.build()
 		).build();
 	}

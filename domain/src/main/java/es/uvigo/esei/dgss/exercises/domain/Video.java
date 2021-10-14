@@ -8,12 +8,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
+import es.uvigo.esei.dgss.exercises.domain.constraints.PositiveDuration;
+
 @Entity
 public class Video extends Post {
 	private static final long serialVersionUID = 1L;
 
 	@Column(nullable = false)
-	@NotNull
+	@NotNull @PositiveDuration
 	private Duration duration;
 
 	protected Video() {}

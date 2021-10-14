@@ -1,4 +1,4 @@
-package es.uvigo.esei.dgss.exercises.rest.dtos;
+package es.uvigo.esei.dgss.exercises.rest.dto;
 
 import javax.ws.rs.core.UriBuilder;
 
@@ -9,7 +9,7 @@ public class UserDTO {
 	private String name;
 	private String email;
 	private byte[] picture;
-	private String postsResource;
+	private String posts;
 
 	public static UserDTO of(User u, UriBuilder baseUri) {
 		final UserDTO dto = new UserDTO();
@@ -18,7 +18,7 @@ public class UserDTO {
 		dto.setName(u.getName());
 		dto.setEmail(u.getEmail().toString());
 		dto.setPicture(u.getPicture());
-		dto.setPostsResource(baseUri.clone()
+		dto.setPosts(baseUri.clone()
 			.path("posts")
 			.build().toASCIIString()
 		);
@@ -58,11 +58,11 @@ public class UserDTO {
 		this.picture = picture;
 	}
 
-	public String getPostsResource() {
-		return postsResource;
+	public String getPosts() {
+		return posts;
 	}
 
-	public void setPostsResource(String postsResource) {
-		this.postsResource = postsResource;
+	public void setPosts(String posts) {
+		this.posts = posts;
 	}
 }

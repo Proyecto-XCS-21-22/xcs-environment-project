@@ -1,4 +1,4 @@
-package es.uvigo.esei.dgss.exercises.rest.dtos;
+package es.uvigo.esei.dgss.exercises.rest.dto;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Date;

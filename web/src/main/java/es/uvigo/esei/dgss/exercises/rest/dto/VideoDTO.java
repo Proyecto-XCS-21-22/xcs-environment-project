@@ -1,4 +1,4 @@
-package es.uvigo.esei.dgss.exercises.rest.dtos;
+package es.uvigo.esei.dgss.exercises.rest.dto;
 
 public class VideoDTO extends PostDTO {
 	private long duration;

@@ -13,8 +13,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import es.uvigo.esei.dgss.exercises.domain.Post;
-import es.uvigo.esei.dgss.exercises.rest.dtos.ListDTO;
-import es.uvigo.esei.dgss.exercises.rest.dtos.PostDTO;
+import es.uvigo.esei.dgss.exercises.rest.dto.ListDTO;
+import es.uvigo.esei.dgss.exercises.rest.dto.PostDTO;
 import es.uvigo.esei.dgss.exercises.service.UserEJB;
 
 @Path("/wall")

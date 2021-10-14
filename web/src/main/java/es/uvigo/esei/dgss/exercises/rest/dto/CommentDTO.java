@@ -1,6 +1,6 @@
-package es.uvigo.esei.dgss.exercises.rest.dtos;
+package es.uvigo.esei.dgss.exercises.rest.dto;
 
-import static es.uvigo.esei.dgss.exercises.rest.dtos.Constants.DATE_FORMATTER;
+import static es.uvigo.esei.dgss.exercises.rest.dto.Constants.DATE_FORMATTER;
 
 import javax.ws.rs.core.UriBuilder;
 
@@ -10,7 +10,7 @@ public class CommentDTO {
 	private long id;
 	private String date;
 	private String text;
-	private String authorResource;
+	private String author;
 
 	public static CommentDTO of(Comment c, UriBuilder baseUri) {
 		final CommentDTO commentDto = new CommentDTO();
@@ -18,7 +18,7 @@ public class CommentDTO {
 		commentDto.setId(c.getId());
 		commentDto.setDate(DATE_FORMATTER.apply(c.getDate()));
 		commentDto.setText(c.getComment());
-		commentDto.setAuthorResource(
+		commentDto.setAuthor(
 			baseUri.clone().path(c.getAuthor().getLogin())
 				.build().toASCIIString()
 		);
@@ -50,11 +50,11 @@ public class CommentDTO {
 		this.text = text;
 	}
 
-	public String getAuthorResource() {
-		return authorResource;
+	public String getAuthor() {
+		return author;
 	}
 
-	public void setAuthorResource(String authorResource) {
-		this.authorResource = authorResource;
+	public void setAuthor(String author) {
+		this.author = author;
 	}
 }

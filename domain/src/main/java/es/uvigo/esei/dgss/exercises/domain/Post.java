@@ -30,6 +30,7 @@ public abstract class Post implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@Column(insertable = false, updatable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
@@ -38,12 +39,11 @@ public abstract class Post implements Serializable {
 	@NotNull @Past
 	private Date date;
 
-	@ManyToOne(optional = false, cascade = CascadeType.MERGE)
+	@ManyToOne(optional = false)
 	@NotNull
 	private User author;
 
-	@OneToMany(cascade = { CascadeType.MERGE, CascadeType.REMOVE }, mappedBy = "post", orphanRemoval = true)
-	@NotNull
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "post", orphanRemoval = true)
 	private Set<Comment> comments;
 
 	@ManyToMany(cascade = CascadeType.MERGE, mappedBy = "likedPosts")

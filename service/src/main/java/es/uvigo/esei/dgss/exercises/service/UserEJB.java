@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.mail.internet.InternetAddress;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 import es.uvigo.esei.dgss.exercises.domain.Friendship;
@@ -42,24 +43,33 @@ public class UserEJB {
 	}
 
 	public User get(String login) {
-		return em.find(User.class, login);
+		final User user = em.find(User.class, login);
+
+		if (user == null) {
+			throw new NoResultException("Unable to find user");
+		}
+
+		return user;
 	}
 
 	public User getCurrent() {
-		final User currentUser = get(getCurrentLogin());
-
-		if (currentUser == null) {
-			throw new IllegalArgumentException("Unable to find current user");
-		}
-
-		return currentUser;
-	}
-
-	public void delete(User user) {
-		delete(user.getLogin());
+		return get(getCurrentUserLogin());
 	}
 
 	public boolean delete(String login) {
+		// See PostEJB#delete on why this apparently unneeded complexity
+		// with DELETE FROM is actually necessary
+
+		em.createQuery(
+			"DELETE FROM Comment c WHERE c.author.login = :login OR " +
+			"c.post IN (SELECT p FROM Post p WHERE p.author.login = :login)"
+		).setParameter("login", login).executeUpdate();
+
+		em.createQuery(
+			"DELETE FROM Friendship f WHERE " +
+			"f.sender.login = :login OR f.receiver.login = :login"
+		).setParameter("login", login).executeUpdate();
+
 		final int deletedPosts = em.createQuery(
 			"DELETE FROM Post p WHERE p.author.login = :login"
 		).setParameter("login", login).executeUpdate();
@@ -75,14 +85,7 @@ public class UserEJB {
 	}
 
 	public Friendship addFriendship(String receiverLogin) {
-		final User sender = getCurrent();
-		final User receiver = get(receiverLogin);
-
-		if (receiver == null) {
-			throw new IllegalArgumentException("Unable to find receiver user");
-		}
-
-		return addFriendship(sender, receiver);
+		return addFriendship(getCurrent(), get(receiverLogin));
 	}
 
 	public Friendship addFriendship(User sender, User receiver) {
@@ -100,7 +103,7 @@ public class UserEJB {
 	}
 
 	public void setRequestedFriendshipAcceptedStatus(String senderLogin, boolean accepted) {
-		final String receiverLogin = getCurrentLogin();
+		final String receiverLogin = getCurrentUserLogin();
 
 		final int modifiedFriendships = em.createQuery(
 				"UPDATE Friendship f SET f.accepted = :accepted WHERE " +
@@ -116,6 +119,10 @@ public class UserEJB {
 		}
 	}
 
+	public void likePost(Post post) {
+		likePost(getCurrent(), post);
+	}
+
 	public void likePost(User user, Post post) {
 		user.likePost(post);
 		em.flush();
@@ -128,22 +135,16 @@ public class UserEJB {
 	}
 
 	public Collection<Post> getAuthoredPosts(String login) {
-		if (ctx.isCallerInRole("admin") || login.equals(getCurrentLogin())) {
-			return em.createQuery(
+		return em.createQuery(
 				"SELECT p FROM Post p WHERE p.author.login = :login",
 				Post.class
 			)
 			.setParameter("login", login)
 			.getResultList();
-		} else {
-			throw new IllegalArgumentException(
-				"Not enough permission to see posts other people posts"
-			);
-		}
 	}
 
 	public Collection<Post> getWallPosts() {
-		final String login = getCurrentLogin();
+		final String login = getCurrentUserLogin();
 
 		return em.createQuery(
 				"SELECT p FROM Post p WHERE " +
@@ -160,7 +161,7 @@ public class UserEJB {
 			.getResultList();
 	}
 
-	private String getCurrentLogin() {
+	private String getCurrentUserLogin() {
 		return ctx.getCallerPrincipal().getName();
 	}
 }

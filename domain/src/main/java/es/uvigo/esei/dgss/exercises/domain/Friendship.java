@@ -5,7 +5,6 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Objects;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -29,7 +28,7 @@ public class Friendship implements Serializable {
 	private User sender;
 
 	@Id
-	@ManyToOne(optional = false, cascade = CascadeType.MERGE)
+	@ManyToOne(optional = false)
 	@NotNull
 	private User receiver;
 
