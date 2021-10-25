@@ -1,6 +1,7 @@
 package es.uvigo.esei.dgss.exercises.jsf.controllers;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Collection;
 
 import javax.enterprise.context.SessionScoped;
@@ -16,7 +17,9 @@ import es.uvigo.esei.dgss.exercises.service.UserEJB;
 
 @Named("userSearchController")
 @SessionScoped
-public class UserSearchController {
+public class UserSearchController implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	@Inject
 	private UserEJB users;
 
