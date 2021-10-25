@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 public class Photo extends Post {
 	private static final long serialVersionUID = 1L;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 512 * 1024)
 	@NotNull
 	private byte[] content;
 

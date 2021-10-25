@@ -14,22 +14,18 @@ public class PersistenceExceptionMapper implements ExceptionMapper<PersistenceEx
 	@Override
 	public Response toResponse(PersistenceException exception) {
 		final Status status;
-		final String entityText;
 
 		if (exception instanceof EntityExistsException) {
 			status = Status.BAD_REQUEST;
-			entityText = "The entity already exists";
 		} else if (exception instanceof NoResultException) {
 			status = Status.NOT_FOUND;
-			entityText = exception.getMessage();
 		} else {
 			status = Status.INTERNAL_SERVER_ERROR;
-			entityText = "Database operation error";
 		}
 
 		return Response
 			.status(status)
-			.entity(entityText)
+			.entity(exception.getMessage())
 			.type(MediaType.TEXT_PLAIN)
 			.build();
 	}

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:comp="http://xmlns.jcp.org/jsf/composite/comp"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+	<f:metadata>
+		<f:viewParam name="login" value="#{userProfileController.login}" />
+	</f:metadata>
+	<ui:composition template="/WEB-INF/templates/mainLayout.xhtml">
+		<ui:param name="title" value="${userProfileController.login}" />
+		<ui:define name="content">
+			<article>
+				<p:card>
+					<div class="p-grid p-jc-center p-m-3 p-nogutter">
+						<div class="p-col-0 p-lg-1" />
+						<div class="p-col-12 p-sm-4 p-lg-3 big-user-picture-container">
+							<comp:userPicture user="${userProfileController.user}"
+								styleClass="responsive-user-picture" />
+						</div>
+						<div class="p-col-0 p-sm-1 p-lg-2" />
+						<div class="p-col-12 p-sm-7 p-lg-6 overflow-wrap-anywhere">
+							<h1 class="xx-large-text">
+								<span><h:outputText
+									value="${userProfileController.user.name}" /></span>
+							</h1>
+							<h2>
+								<i class="pi pi-user p-mr-2"></i><span><h:outputText
+									value="${userProfileController.login}" /></span>
+							</h2>
+							<address class="larger-text">
+								<i class="pi pi-envelope p-mr-2"></i>
+								<h:outputLink value="mailto:${userProfileController.user.email}">
+									<h:outputText value="${userProfileController.user.email}" />
+								</h:outputLink>
+							</address>
+						</div>
+					</div>
+				</p:card>
+			</article>
+			<p:card>
+				<h1 class="no-margin p-mb-4">
+					Posts by <span><h:outputText
+							value="${userProfileController.login}" /></span>
+				</h1>
+
+				<ui:repeat value="${userProfileController.getPosts()}" var="post">
+					<article class="p-grid nested-grid p-jc-center p-nogutter">
+						<p:card class="p-col post-container">
+							<div class="p-col-12">
+								<div class="p-grid p-jc-between overflow-wrap-anywhere">
+									<div class="p-col">
+										<h3 class="p-m-0">
+											<span><h:outputText value="${post.id}">
+												<f:convertNumber pattern="'#'000000" />
+											</h:outputText></span>
+										</h3>
+									</div>
+									<div class="p-col-fixed parent-width-constrained">
+										<small>Published: <b><h:outputText value="${post.date}">
+											<f:convertDateTime type="both" locale="en" dateStyle="short" />
+										</h:outputText></b></small>
+									</div>
+								</div>
+							</div>
+							<div class="p-col-12">
+								<ui:fragment rendered="${post['class'].simpleName == 'LinkDTO'}">
+									<h:outputLink value="${post.url}" target="_blank"
+										styleClass="overflow-wrap-anywhere">
+										<h:outputText value="${post.url}" />
+									</h:outputLink><i class="pi pi-external-link p-ml-2"></i>
+								</ui:fragment>
+								<ui:fragment rendered="${post['class'].simpleName == 'PhotoDTO'}">
+									<div class="p-grid p-jc-center">
+										<div class="p-col-fixed parent-width-constrained">
+											<h:graphicImage url="${util.pictureToGraphicURL(post.content)}"
+												alt="Post picture" styleClass="parent-width-constrained" />
+										</div>
+									</div>
+								</ui:fragment>
+								<ui:fragment rendered="${post['class'].simpleName == 'VideoDTO'}">
+									<p class="p-text-center">Duration: <time><h:outputText
+										value="${post.duration}">
+										<f:converter converterId="duration" />
+									</h:outputText></time>.<h:outputText
+										value=" Please play the video in loop to reach the desired duration."
+										rendered="${post.duration.seconds gt 212}" /><h:outputText
+										value=" Please stop playing the video when that duration is reached."
+										rendered="${post.duration.seconds lt 212}" /></p>
+									<div class="dm-video-container">
+										<iframe src="https://www.dailymotion.com/embed/video/x82hnx2"
+											allowfullscreen="" class="dm-video" />
+									</div>
+								</ui:fragment>
+							</div>
+							<div class="p-col-12">
+								<div class="p-grid">
+									<div class="p-col-fixed parent-width-constrained"
+										title="${util.commaJoinSome(post.likeLogins, 'Nobody liked this')}">
+										<i class="pi pi-thumbs-up p-mr-2"></i><span><h:outputText
+											value="${post.likeLogins.size()}"></h:outputText></span>
+									</div>
+									<div class="p-col-fixed parent-width-constrained">
+										<i class="pi pi-comments p-mr-2"></i><span><h:outputText
+											value="${post.commentCount}"></h:outputText></span>
+									</div>
+								</div>
+							</div>
+						</p:card>
+					</article>
+				</ui:repeat>
+				<ui:fragment rendered="${empty userProfileController.getPosts()}">
+					<p>There is nothing to see here yet...</p>
+				</ui:fragment>
+			</p:card>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

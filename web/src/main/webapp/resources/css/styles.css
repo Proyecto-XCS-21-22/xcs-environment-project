@@ -1,0 +1,101 @@
+* {
+	font-family: var(--font-family);
+}
+
+html {
+	/* Viewport background */
+	background-color: var(--text-color);
+}
+
+body {
+	/*
+	 * Content background.
+	 * The content may be smaller in the vertical axis than the viewport,
+	 * so this is used to simulate that the background extends to the viewport
+	 * without ugly positioning or hacks
+	 */
+	background-color: white;
+}
+
+header, footer {
+	background-color: var(--text-color);
+	color: var(--surface-b);
+}
+
+.max-width-20 {
+	max-width: 20em;
+}
+
+.xx-large-text {
+	font-size: xx-large;
+}
+
+.larger-text, .post-count {
+	font-size: larger;
+}
+
+.user-picture {
+	display: table-cell;
+	vertical-align: middle;
+	object-fit: cover;
+	clip-path: circle(closest-side);
+}
+
+.small-user-picture {
+	width: 96px;
+	height: 96px;
+}
+
+.big-user-picture-container {
+	max-width: 256px;
+}
+
+.ui-card.post-container {
+	max-width: 90ch;
+	background-color: var(--surface-d);
+}
+
+.responsive-user-picture {
+	width: 100%;
+}
+
+.parent-width-constrained {
+	max-width: 100%;
+}
+
+.overflow-wrap-anywhere {
+	overflow-wrap: anywhere;
+}
+
+.no-margin {
+	margin: 0;
+}
+
+.dm-video-container {
+	position: relative;
+	height: 0;
+	padding-bottom: 56.25%;
+	overflow: hidden;
+}
+
+.dm-video {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	overflow: hidden
+}
+
+.loading-modal .loading-icon {
+	font-size: 3em;
+}
+
+.loading-modal > div.ui-dialog-content {
+	padding: 1em;
+}
+
+/* Center user pictures horizontally within their row in datatables */
+@media(min-width: 641px) {
+	.ui-datatable-reflow .ui-datatable-data td[role="gridcell"]:not(.ui-helper-hidden).user-picture-column {
+		text-align: center;
+	}
+}

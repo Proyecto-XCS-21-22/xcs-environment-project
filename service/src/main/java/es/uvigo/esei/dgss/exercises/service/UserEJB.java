@@ -56,6 +56,20 @@ public class UserEJB {
 		return get(getCurrentUserLogin());
 	}
 
+	public Collection<User> search(String query) {
+		// LIKE patterns interpret wildcard characters that might be
+		// present in the query string, and would need to be escaped.
+		// To avoid escaping strings and keep the code straightforward,
+		// use the LOCATE SQL function instead, which interprets strings
+		// literally, without giving any special treatment to any char
+		return em.createQuery(
+			"SELECT u FROM User u WHERE " +
+			"LOCATE(:query, u.login) > 0 OR LOCATE(:query, u.name) > 0 OR LOCATE(:query, u.email) > 0 " +
+			"ORDER BY CONCAT(u.login, u.name, u.email) ASC",
+			User.class
+		).setParameter("query", query).getResultList();
+	}
+
 	public boolean delete(String login) {
 		// See PostEJB#delete on why this apparently unneeded complexity
 		// with DELETE FROM is actually necessary
@@ -115,7 +129,7 @@ public class UserEJB {
 			.executeUpdate();
 
 		if (modifiedFriendships < 1) {
-			throw new IllegalArgumentException("Unable to find friendship request");
+			throw new NoResultException("Unable to find friendship request");
 		}
 	}
 

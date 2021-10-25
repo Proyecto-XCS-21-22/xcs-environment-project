@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>EaSINet · <h:outputText value="${title}" /></title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="icon apple-touch-icon apple-touch-startup-image"
+		type="image/x-icon" href="#{resource['img/favicon.ico']}" />
+
+	<h:outputStylesheet library="webjars"
+		name="primeflex/2.0.0/primeflex.min.css" />
+	<h:outputStylesheet name="css/styles.css" />
+</h:head>
+<h:body class="p-m-0">
+	<header class="p-p-1 p-p-sm-4 p-shadow-3 overflow-wrap-anywhere">
+		<h1 class="p-text-center">EaSINet</h1>
+	</header>
+
+	<main>
+		<ui:insert name="content" />
+	</main>
+
+	<p:ajaxStatus onstart="PF('loadingDialog').show()"
+		onsuccess="PF('loadingDialog').hide()"
+		onerror="PF('loadingDialog').hide(); PF('loadingFailedDialog').show()" />
+
+	<p:dialog widgetVar="loadingDialog" modal="true" draggable="false"
+		closable="false" resizable="false" showHeader="false"
+		styleClass="loading-modal">
+		<div class="p-text-center">
+			<i class="pi pi-spin pi-spinner loading-icon" aria-hidden="true"></i>
+			<p class="p-mb-0">Hang on...</p>
+		</div>
+	</p:dialog>
+
+	<p:dialog widgetVar="loadingFailedDialog" modal="true"
+		draggable="false" resizable="false" header="Error">
+		<p class="p-m-0">Something went wrong while processing that
+			request. Please try again.</p>
+		<f:facet name="footer">
+			<p:button value="OK" onclick="PF('loadingFailedDialog').hide()" />
+		</f:facet>
+	</p:dialog>
+
+	<footer class="p-p-1 p-p-sm-4 overflow-wrap-anywhere">
+		<p class="p-text-center">Made by Alejandro González García</p>
+		<p class="p-text-center">Enxeñaría de Sistemas de Información.
+			Escola Superior de Enxeñaría Informática, curso 2021/2022</p>
+	</footer>
+</h:body>
+</html>

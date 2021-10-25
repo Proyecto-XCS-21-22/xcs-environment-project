@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:comp="http://xmlns.jcp.org/jsf/composite/comp"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+	<ui:composition template="/WEB-INF/templates/mainLayout.xhtml">
+		<ui:param name="title" value="Users" />
+		<ui:define name="content">
+			<h1 class="p-text-center">Check out our numbers!</h1>
+
+			<div class="p-grid p-jc-center p-m-2">
+				<div class="p-col p-sm-4 p-text-center max-width-20">
+					<p:card>
+						<f:facet name="title">Post count</f:facet>
+						<h:outputText styleClass="xx-large-text"
+							value="${userSearchController.postCount}" />
+					</p:card>
+				</div>
+				<div class="p-col p-sm-4 p-text-center max-width-20">
+					<p:card>
+						<f:facet name="title">User count</f:facet>
+						<h:outputText styleClass="xx-large-text"
+							value="${userSearchController.userCount}" />
+					</p:card>
+				</div>
+			</div>
+
+			<h:form id="userSearchForm">
+				<p:growl showDetail="true" skipDetailIfEqualsSummary="true"
+					id="messages" />
+
+				<p:card>
+					<h2 class="p-text-center p-mt-0">Find new friends</h2>
+
+					<div class="ui-fluid p-d-flex p-jc-center p-mb-5">
+						<div class="ui-inputgroup">
+							<p:inputText placeholder="Search..."
+								value="#{userSearchController.searchQuery}" required="true" />
+							<p:commandButton icon="pi pi-search"
+								action="#{userSearchController.doSearch}"
+								update="@(form :input) messages resultsTable" />
+						</div>
+					</div>
+
+					<p:dataTable id="resultsTable"
+						value="${userSearchController.searchResults}" var="user"
+						emptyMessage="No users to show. Try searching!"
+						selectionMode="single"
+						selection="#{userSearchController.selectedUser}"
+						rowKey="${user.login}" reflow="true" paginator="true"
+						paginatorPosition="bottom" rows="15" stripedRows="true">
+						<p:ajax event="rowSelect"
+							listener="#{userSearchController.doUserSelection}" />
+
+						<p:column headerText="Picture" styleClass="user-picture-column">
+							<comp:userPicture user="${user}" styleClass="small-user-picture" />
+						</p:column>
+
+						<p:column headerText="Login">
+							<h:outputText value="${user.login}" />
+						</p:column>
+
+						<p:column headerText="Name">
+							<h:outputText value="${user.name}" />
+						</p:column>
+
+						<p:column headerText="E-mail">
+							<h:outputLink value="mailto:${user.email}">
+								<h:outputText value="${user.email}" />
+							</h:outputLink>
+						</p:column>
+					</p:dataTable>
+				</p:card>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

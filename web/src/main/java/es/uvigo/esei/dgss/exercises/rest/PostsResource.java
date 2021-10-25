@@ -16,7 +16,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import es.uvigo.esei.dgss.exercises.domain.Link;
@@ -125,10 +124,8 @@ public class PostsResource {
 	@DELETE
 	@Path("/{id}")
 	public Response delete(@PathParam("id") long postId) {
-		if (!posts.delete(postId)) {
-			return Response.status(Status.BAD_REQUEST).build();
-		} else {
-			return Response.noContent().build();
-		}
+		posts.delete(postId);
+
+		return Response.noContent().build();
 	}
 }

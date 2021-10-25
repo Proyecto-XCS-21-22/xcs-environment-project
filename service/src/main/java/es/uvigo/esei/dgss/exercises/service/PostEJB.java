@@ -9,6 +9,7 @@ import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -92,7 +93,9 @@ public class PostEJB {
 		// be instances of an abstract type
 		if (forEdition && !canEditAnyPost) {
 			post = em.createQuery(
-					"SELECT p FROM Post p WHERE (:type = Post OR TYPE(p) = :type) AND p.id = :id AND p.author.login = :login",
+					"SELECT p FROM Post p WHERE " +
+					"(:type = Post OR TYPE(p) = :type) AND " +
+					"p.id = :id AND p.author.login = :login",
 					Post.class
 				)
 				.setMaxResults(1)
@@ -102,7 +105,9 @@ public class PostEJB {
 				.getSingleResult();
 		} else {
 			post = em.createQuery(
-					"SELECT p FROM Post p WHERE (:type = Post OR TYPE(p) = :type) AND p.id = :id",
+					"SELECT p FROM Post p WHERE " +
+					"(:type = Post OR TYPE(p) = :type) AND " +
+					"p.id = :id",
 					Post.class
 				)
 				.setMaxResults(1)
@@ -114,7 +119,7 @@ public class PostEJB {
 		return (T) post;
 	}
 
-	public boolean delete(long id) {
+	public void delete(long id) {
 		final BiFunction<String, String, Query> updateQuerySupplier = (String dml, String filtertedDml) -> {
 			final boolean canDeleteAnyPost = isCurrentUserPrivileged();
 			final String actualDml;
@@ -157,7 +162,8 @@ public class PostEJB {
 
 		updateQuerySupplier.apply(
 			"DELETE FROM Comment c WHERE c.post.id = :id",
-			"DELETE FROM Comment c WHERE c.post IN (SELECT p FROM Post p WHERE p.id = :id AND p.author.login = :login)"
+			"DELETE FROM Comment c WHERE c.post IN " +
+			"(SELECT p FROM Post p WHERE p.id = :id AND p.author.login = :login)"
 		).executeUpdate();
 
 		final int deletedPosts = updateQuerySupplier.apply(
@@ -167,7 +173,9 @@ public class PostEJB {
 
 		statistics.decrementPostCountBy(deletedPosts);
 
-		return deletedPosts > 0;
+		if (deletedPosts < 1) {
+			throw new NoResultException("Unable to delete post");
+		}
 	}
 
 	public Comment addComment(Post post, User author, String text) {
