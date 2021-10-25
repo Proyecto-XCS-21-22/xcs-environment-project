@@ -43,14 +43,14 @@
 			<p:card>
 				<h1 class="no-margin p-mb-4">
 					Posts by <span><h:outputText
-							value="${userProfileController.login}" /></span>
+						value="${userProfileController.login}" /></span>
 				</h1>
 
 				<ui:repeat value="${userProfileController.getPosts()}" var="post">
 					<article class="p-grid nested-grid p-jc-center p-nogutter">
 						<p:card class="p-col post-container">
 							<div class="p-col-12">
-								<div class="p-grid p-jc-between overflow-wrap-anywhere">
+								<div class="p-grid p-jc-between">
 									<div class="p-col">
 										<h3 class="p-m-0">
 											<span><h:outputText value="${post.id}">
@@ -58,7 +58,7 @@
 											</h:outputText></span>
 										</h3>
 									</div>
-									<div class="p-col-fixed parent-width-constrained">
+									<div class="p-col-fixed parent-width-constrained overflow-wrap-anywhere">
 										<small>Published: <b><h:outputText value="${post.date}">
 											<f:convertDateTime type="both" locale="en" dateStyle="short" />
 										</h:outputText></b></small>
@@ -81,7 +81,7 @@
 									</div>
 								</ui:fragment>
 								<ui:fragment rendered="${post['class'].simpleName == 'VideoDTO'}">
-									<p class="p-text-center">Duration: <time><h:outputText
+									<p class="p-text-center overflow-wrap-anywhere">Duration: <time><h:outputText
 										value="${post.duration}">
 										<f:converter converterId="duration" />
 									</h:outputText></time>.<h:outputText
