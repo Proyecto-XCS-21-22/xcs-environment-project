@@ -15,10 +15,10 @@ public class PersistenceExceptionMapper implements ExceptionMapper<PersistenceEx
 	public Response toResponse(PersistenceException exception) {
 		final Status status;
 
-		if (exception instanceof EntityExistsException) {
-			status = Status.BAD_REQUEST;
-		} else if (exception instanceof NoResultException) {
+		if (exception instanceof NoResultException) {
 			status = Status.NOT_FOUND;
+		} else if (exception instanceof EntityExistsException) {
+			status = Status.CONFLICT;
 		} else {
 			status = Status.INTERNAL_SERVER_ERROR;
 		}

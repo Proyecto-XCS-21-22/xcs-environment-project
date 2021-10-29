@@ -19,12 +19,13 @@ public class EJBExceptionMapper implements ExceptionMapper<EJBException> {
 
 		if (
 			cause instanceof ValidationException ||
-			cause instanceof IllegalArgumentException ||
-			cause instanceof EntityExistsException
+			cause instanceof IllegalArgumentException
 		) {
 			status = Status.BAD_REQUEST;
 		} else if (cause instanceof NoResultException) {
 			status = Status.NOT_FOUND;
+		} else if (cause instanceof EntityExistsException) {
+			status = Status.CONFLICT;
 		} else {
 			status = Status.INTERNAL_SERVER_ERROR;
 		}
