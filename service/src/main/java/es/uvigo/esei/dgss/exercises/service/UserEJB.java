@@ -103,13 +103,7 @@ public class UserEJB {
 	}
 
 	public Friendship addFriendship(User sender, User receiver) {
-		Friendship friendship = new Friendship(sender, receiver);
-
-		if (sender.getLogin().equals(receiver.getLogin())) {
-			throw new IllegalArgumentException(
-				"The receiver login must be not equal to the sender login"
-			);
-		}
+		final Friendship friendship = new Friendship(sender, receiver);
 
 		em.persist(friendship);
 
