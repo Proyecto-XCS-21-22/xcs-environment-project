@@ -145,8 +145,8 @@ public class User implements Serializable {
 		return Collections.unmodifiableSet(receivedFriendships);
 	}
 
-	public void likePost(Post post) {
-		likedPosts.add(post);
+	public boolean likePost(Post post) {
+		return likedPosts.add(post);
 	}
 
 	@Override

@@ -132,14 +132,15 @@ public class UserEJB {
 	}
 
 	public void likePost(User user, Post post) {
-		user.likePost(post);
-		em.flush();
+		if (user.likePost(post)) {
+			em.flush();
 
-		email.sendEmail(
-			post.getAuthor(),
-			"Someone liked your post!",
-			user.getName() + " liked the post " + post.getId() + " that you made at " + post.getDate()
-		);
+			email.sendEmail(
+				post.getAuthor(),
+				"Someone liked your post!",
+				user.getName() + " liked the post " + post.getId() + " that you made at " + post.getDate()
+			);
+		}
 	}
 
 	public Collection<Post> getAuthoredPosts(String login) {
