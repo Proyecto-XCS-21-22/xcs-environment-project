@@ -13,6 +13,10 @@
 	<name>Web</name>
 	<description>DGSS Exercises - Web</description>
 
+	<properties>
+		<docker.hub.namespace>aggarcia3</docker.hub.namespace>
+	</properties>
+
 	<dependencies>
 		<!-- General -->
 		<dependency>
@@ -20,6 +24,7 @@
 			<artifactId>javaee-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>es.uvigo.esei.dgss</groupId>
 			<artifactId>service</artifactId>
@@ -31,7 +36,8 @@
 			<artifactId>domain</artifactId>
 		</dependency>
 
-		<!-- Jackson annotations provided by WildFly. We use them to customize DTO mapping -->
+		<!-- Jackson annotations provided by WildFly. We use them to customize
+			DTO mapping -->
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jackson2-provider</artifactId>
@@ -57,23 +63,88 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>java-hamcrest</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.arquillian.extension</groupId>
-			<artifactId>arquillian-persistence-dbunit</artifactId>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.wildfly.plugins</groupId>
-				<artifactId>wildfly-maven-plugin</artifactId>
+				<groupId>io.thorntail</groupId>
+				<artifactId>thorntail-maven-plugin</artifactId>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<configuration>
+					<images>
+						<image>
+							<alias>web</alias>
+							<name>${docker.hub.namespace}/%a:%l</name>
+							<run>
+								<ports>
+									<port>8080:8080</port>
+								</ports>
+								<wait>
+									<http>
+										<url>http://localhost:8080/faces/index.xhtml</url>
+									</http>
+									<time>60000</time>
+								</wait>
+								<links>
+									<!-- Use Docker legacy feature to avoid having to set up networks outside of the POM -->
+									<link>db</link>
+								</links>
+							</run>
+							<build>
+								<from>openjdk:8-jre-slim</from>
+								<ports>
+									<port>8080</port>
+								</ports>
+								<assembly>
+									<targetDir>/srv/http</targetDir>
+									<permissions>auto</permissions>
+									<inline>
+										<files>
+											<file>
+												<source>${project.build.directory}/${project.build.finalName}-thorntail.jar</source>
+												<destName>${project.artifactId}.jar</destName>
+											</file>
+										</files>
+									</inline>
+								</assembly>
+								<entryPoint>
+									<exec>
+										<arg>java</arg>
+										<arg>-jar</arg>
+										<arg>/srv/http/${project.artifactId}.jar</arg>
+									</exec>
+								</entryPoint>
+							</build>
+						</image>
+						<image>
+							<alias>db</alias>
+							<name>mariadb:10.7</name>
+							<run>
+								<env>
+									<MYSQL_DATABASE>dgss</MYSQL_DATABASE>
+									<MYSQL_USER>dgssuser</MYSQL_USER>
+									<MYSQL_PASSWORD>dgsspass</MYSQL_PASSWORD>
+									<MYSQL_RANDOM_ROOT_PASSWORD>true</MYSQL_RANDOM_ROOT_PASSWORD>
+								</env>
+								<wait>
+									<tcp>
+										<ports>
+											<port>3306</port>
+										</ports>
+									</tcp>
+									<time>60000</time>
+								</wait>
+							</run>
+						</image>
+					</images>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

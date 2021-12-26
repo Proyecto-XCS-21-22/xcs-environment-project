@@ -3,11 +3,13 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
              http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
 	version="2.1">
-	<persistence-unit name="test" transaction-type="JTA">
-		<jta-data-source>datasource/dgss</jta-data-source>
-		
+	<persistence-unit name="dgss" transaction-type="JTA">
+		<jta-data-source>java:/datasource/dgss</jta-data-source>
+
 		<properties>
-			<property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
+			<property
+				name="javax.persistence.schema-generation.database.action"
+				value="create" />
 		</properties>
 	</persistence-unit>
 </persistence>
