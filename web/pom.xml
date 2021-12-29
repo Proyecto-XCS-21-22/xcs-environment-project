@@ -63,6 +63,37 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>io.thorntail</groupId>
+			<artifactId>arquillian</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.arquillian.junit</groupId>
+			<artifactId>arquillian-junit-container</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.arquillian.extension</groupId>
+			<artifactId>arquillian-persistence-dbunit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jackson-provider</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-client</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -72,6 +103,17 @@
 				<artifactId>thorntail-maven-plugin</artifactId>
 				<configuration>
 					<skip>false</skip>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<!-- Makes Arquillian deployment exceptions easier to debug -->
+					<trimStackTrace>false</trimStackTrace>
+					<systemPropertyVariables>
+						<thorntail.project.stage>test-db</thorntail.project.stage>
+					</systemPropertyVariables>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -93,12 +135,13 @@
 									<time>60000</time>
 								</wait>
 								<links>
-									<!-- Use Docker legacy feature to avoid having to set up networks outside of the POM -->
+									<!-- Use Docker legacy feature to avoid having to set up networks
+										outside of the POM -->
 									<link>db</link>
 								</links>
 							</run>
 							<build>
-								<from>openjdk:8-jre-slim</from>
+								<from>azul/zulu-openjdk-alpine:8</from>
 								<ports>
 									<port>8080</port>
 								</ports>
@@ -119,6 +162,7 @@
 										<arg>java</arg>
 										<arg>-jar</arg>
 										<arg>/srv/http/${project.artifactId}.jar</arg>
+										<arg>-Sdocker-mysql-db</arg>
 									</exec>
 								</entryPoint>
 							</build>

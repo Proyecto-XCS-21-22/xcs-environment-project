@@ -16,11 +16,15 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import de.rtner.security.auth.spi.SimplePBKDF2;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.codec.digest.MessageDigestAlgorithms;
+
 import es.uvigo.esei.dgss.exercises.domain.constraints.ValidAddress;
 
 @Entity
 public class User implements Serializable {
+	static final DigestUtils PASSWORD_HASHER = new DigestUtils(MessageDigestAlgorithms.MD5);
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -32,7 +36,7 @@ public class User implements Serializable {
 	@NotNull @Size(min = 1, max = 64)
 	private String name;
 
-	@Column(nullable = false, length = 64)
+	@Column(nullable = false, length = 32)
 	@NotNull
 	private String password;
 
@@ -83,6 +87,10 @@ public class User implements Serializable {
 		this.name = Objects.requireNonNull(name);
 	}
 
+	String getPassword() {
+		return password;
+	}
+
 	public void setPassword(String password) {
 		password = Objects.requireNonNull(password);
 
@@ -90,19 +98,7 @@ public class User implements Serializable {
 			throw new IllegalArgumentException("The password is too short");
 		}
 
-		// Use PBKDF2 as a password hashing algorithm because it's much safer than MD5,
-		// as it provides key stretching by using salts, and it has a configurable number
-		// of iterations that allows increasing the hashing cost as computers get more
-		// powerful. RFC 8018 recommends PBKDF2 for password hashing.
-		//
-		// I also was curious about how to properly deal with passwords in a Java EE
-		// application. (Side note: a char[] is better when it comes to storing passwords
-		// in memory, because it can be cleared out more easily when needed. But working
-		// with char[] is more cumbersome, and if an attacker has access to the main
-		// memory things are screwed anyway. See: https://stackoverflow.com/a/8881376/9366153)
-		//
-		// See the jboss-web.xml file for more details
-		this.password = new SimplePBKDF2(8, 25000).deriveKeyFormatted(password);
+		this.password = PASSWORD_HASHER.digestAsHex(password);
 	}
 
 	public InternetAddress getEmail() {

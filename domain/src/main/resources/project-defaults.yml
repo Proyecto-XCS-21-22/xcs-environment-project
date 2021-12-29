@@ -1,22 +1,16 @@
 thorntail:
-  datasources:
-    data-sources:
-      dgss:
-        jndi-name: java:/datasource/dgss
-        connection-url: jdbc:mysql://db:3306/dgss?serverTimezone=UTC
-        driver-name: mysql
-        user-name: dgssuser
-        password: dgsspass
   security:
     security-domains:
       dgss-security-domain:
         classic-authentication:
           login-modules:
             Database:
-              code: de.rtner.security.auth.spi.SaltedDatabaseServerLoginModule
+              code: Database
               flag: required
-              module: de.rtner.PBKDF2
               module-options:
                 dsJndiName: datasource/dgss
                 principalsQuery: SELECT password FROM User WHERE login = ?
                 rolesQuery: SELECT role, 'Roles' FROM User WHERE login = ?
+                hashAlgorithm: MD5
+                hashEncoding: hex
+                ignorePasswordCase: true

@@ -1,0 +1,9 @@
+thorntail:
+  datasources:
+    data-sources:
+      dgss:
+        jndi-name: java:/datasource/dgss
+        connection-url: jdbc:mysql://db:3306/dgss?serverTimezone=UTC
+        driver-name: mysql
+        user-name: dgssuser
+        password: dgsspass

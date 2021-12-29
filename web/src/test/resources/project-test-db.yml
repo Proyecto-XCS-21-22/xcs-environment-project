@@ -1,0 +1,9 @@
+thorntail:
+  datasources:
+    data-sources:
+      dgss:
+        jndi-name: java:/datasource/dgss
+        connection-url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+        driver-name: h2
+        user-name: sa
+        password: sa

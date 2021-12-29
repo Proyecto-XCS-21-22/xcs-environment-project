@@ -22,8 +22,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>de.rtner</groupId>
-			<artifactId>PBKDF2</artifactId>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
 		</dependency>
 
 		<dependency>

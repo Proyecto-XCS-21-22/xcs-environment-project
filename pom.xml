@@ -25,17 +25,26 @@
 		<!-- BOM versions -->
 		<javaee.api.version>7.0</javaee.api.version>
 		<thorntail.version>2.7.0.Final</thorntail.version>
+		<arquillian.version>1.6.0.Final</arquillian.version>
 
 		<!-- Dependency versions -->
 		<mysql.connector.java.version>5.1.49</mysql.connector.java.version>
-		<pbkdf2.version>1.1.4</pbkdf2.version>
+		<commons.codec.version>1.15</commons.codec.version>
 
 		<!-- Testing dependency versions -->
 		<junit.version>4.12</junit.version>
+		<arquillian.persistence.version>1.0.0.Alpha7</arquillian.persistence.version>
+		<resteasy.jackson.provider.version>3.15.3.Final</resteasy.jackson.provider.version>
+		<resteasy.client.version>3.0.2.Final</resteasy.client.version>
+		<!-- A newer H2 version is not compatible with the Hibernate version bundled
+			with Thorntail -->
+		<h2.version>1.4.200</h2.version>
 
 		<!-- Plugins versions -->
 		<maven.dependency.plugin.version>2.10</maven.dependency.plugin.version>
-		<maven.surefire.plugin.version>2.18.1</maven.surefire.plugin.version>
+		<!-- This slightly older version does not buffer test stdout, and its output
+			looks nicer overall -->
+		<maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
 		<maven.deploy.plugin.version>3.0.0-M1</maven.deploy.plugin.version>
 		<docker.maven.plugin.version>0.38.1</docker.maven.plugin.version>
 	</properties>
@@ -48,6 +57,20 @@
 				<artifactId>javaee-api</artifactId>
 				<version>${javaee.api.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>io.thorntail</groupId>
+				<artifactId>bom</artifactId>
+				<version>${thorntail.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.arquillian</groupId>
+				<artifactId>arquillian-bom</artifactId>
+				<version>${arquillian.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 
 			<dependency>
 				<groupId>mysql</groupId>
@@ -55,9 +78,9 @@
 				<version>${mysql.connector.java.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>de.rtner</groupId>
-				<artifactId>PBKDF2</artifactId>
-				<version>${pbkdf2.version}</version>
+				<groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>
+				<version>${commons.codec.version}</version>
 			</dependency>
 
 			<!-- Testing -->
@@ -65,6 +88,26 @@
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>${junit.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.arquillian.extension</groupId>
+				<artifactId>arquillian-persistence-dbunit</artifactId>
+				<version>${arquillian.persistence.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.resteasy</groupId>
+				<artifactId>resteasy-jackson-provider</artifactId>
+				<version>${resteasy.jackson.provider.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.resteasy</groupId>
+				<artifactId>resteasy-client</artifactId>
+				<version>${resteasy.client.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.h2database</groupId>
+				<artifactId>h2</artifactId>
+				<version>${h2.version}</version>
 			</dependency>
 
 			<!-- Modules -->
@@ -136,16 +179,15 @@
 					<executions>
 						<execution>
 							<id>package-docker-image</id>
-							<!-- Bind build goal to the package phase to make sure that we don't
-								pull the image when deploying for integration tests -->
-							<phase>package</phase>
+							<!-- Bind build goal to the pre-integration-test phase to make sure
+								that we don't pull the image when deploying for integration tests -->
+							<phase>pre-integration-test</phase>
 							<goals>
 								<goal>build</goal>
 							</goals>
 						</execution>
 						<execution>
 							<goals>
-								<goal>build</goal>
 								<goal>start</goal>
 								<goal>stop</goal>
 								<goal>push</goal>
