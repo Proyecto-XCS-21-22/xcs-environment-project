@@ -2,8 +2,8 @@ name: CI & CD
 on:
   push:
     branches-ignore:
-      - release/*
-      - junk/*
+      - release-*
+      - junk-*
   pull_request:
     branches:
       - master
