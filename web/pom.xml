@@ -13,6 +13,10 @@
 	<name>Web</name>
 	<description>DGSS Exercises - Web</description>
 
+	<properties>
+		<docker.tag>%l</docker.tag>
+	</properties>
+
 	<dependencies>
 		<!-- General -->
 		<dependency>
@@ -120,7 +124,7 @@
 					<images>
 						<image>
 							<alias>web</alias>
-							<name>${env.DOCKERHUB_NAMESPACE}/${env.DOCKERHUB_NAME}:%l</name>
+							<name>${env.DOCKERHUB_NAMESPACE}/${env.DOCKERHUB_NAME}:${docker.tag}</name>
 							<run>
 								<ports>
 									<port>8080:8080</port>

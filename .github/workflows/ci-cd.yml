@@ -50,7 +50,7 @@ jobs:
         if: ${{ github.event != 'release' }}
         env:
           DOCKERHUB_NAME: ${{ env.DOCKERHUB_STAGING_NAME }}
-        run: ./mvnw -B --no-transfer-progress deploy
+        run: ./mvnw -B --no-transfer-progress deploy -Ddocker.tag="${{ github.event_name }}-${{ github.ref_name }}-latest"
 
       - name: Verify and deploy application to production environment
         if: ${{ github.event == 'release' }}
