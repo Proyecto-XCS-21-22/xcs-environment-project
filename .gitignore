@@ -10,3 +10,4 @@ bin
 
 #Maven
 target
+release.properties

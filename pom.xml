@@ -15,6 +15,10 @@
 		<module>web</module>
 	</modules>
 
+	<scm>
+		<developerConnection>scm:git:https://github.com/Proyecto-XCS-21-22/xcs-environment-project.git</developerConnection>
+	</scm>
+
 	<properties>
 		<!-- General properties -->
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -45,6 +49,7 @@
 		<!-- This slightly older version does not buffer test stdout, and its output
 			looks nicer overall -->
 		<maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
+		<maven.release.plugin.version>3.0.0-M4</maven.release.plugin.version>
 		<maven.deploy.plugin.version>3.0.0-M1</maven.deploy.plugin.version>
 		<docker.maven.plugin.version>0.38.1</docker.maven.plugin.version>
 	</properties>
@@ -148,6 +153,16 @@
 					<version>${maven.deploy.plugin.version}</version>
 					<configuration>
 						<skip>true</skip>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>${maven.release.plugin.version}</version>
+					<configuration>
+						<scmCommentPrefix>chore:</scmCommentPrefix>
+						<autoVersionSubmodules>true</autoVersionSubmodules>
+						<tagNameFormat>v@{version}</tagNameFormat>
 					</configuration>
 				</plugin>
 				<plugin>

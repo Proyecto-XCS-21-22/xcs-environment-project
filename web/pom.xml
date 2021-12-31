@@ -116,6 +116,7 @@
 				<groupId>io.fabric8</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
 				<configuration>
+					<autoCreateCustomNetworks>true</autoCreateCustomNetworks>
 					<images>
 						<image>
 							<alias>web</alias>
@@ -130,11 +131,12 @@
 									</http>
 									<time>60000</time>
 								</wait>
-								<links>
-									<!-- Use Docker legacy feature to avoid having to set up networks
-										outside of the POM -->
-									<link>db</link>
-								</links>
+								<network>
+									<name>${project.groupId}.${project.artifactId}</name>
+								</network>
+								<dependsOn>
+									<container>db</container>
+								</dependsOn>
 							</run>
 							<build>
 								<from>azul/zulu-openjdk-alpine:8</from>
@@ -181,6 +183,10 @@
 									</tcp>
 									<time>60000</time>
 								</wait>
+								<network>
+									<name>${project.groupId}.${project.artifactId}</name>
+									<alias>db</alias>
+								</network>
 							</run>
 						</image>
 					</images>
