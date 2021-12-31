@@ -13,10 +13,6 @@
 	<name>Web</name>
 	<description>DGSS Exercises - Web</description>
 
-	<properties>
-		<docker.hub.namespace>aggarcia3</docker.hub.namespace>
-	</properties>
-
 	<dependencies>
 		<!-- General -->
 		<dependency>
@@ -123,7 +119,7 @@
 					<images>
 						<image>
 							<alias>web</alias>
-							<name>${docker.hub.namespace}/%a:%l</name>
+							<name>${env.DOCKERHUB_NAMESPACE}/${env.DOCKERHUB_NAME}:%l</name>
 							<run>
 								<ports>
 									<port>8080:8080</port>

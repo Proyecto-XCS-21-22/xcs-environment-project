@@ -1,0 +1,59 @@
+name: CI & CD
+on:
+  push:
+    branches-ignore:
+      - release/*
+      - junk/*
+  pull_request:
+    branches:
+      - master
+  release:
+    types:
+      - published
+jobs:
+  ci-cd:
+    name: CI & CD
+    strategy:
+      fail-fast: true
+      matrix:
+        runner: [ ubuntu-latest ]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 15
+    env:
+      DOCKERHUB_NAMESPACE: aggarcia3
+      DOCKERHUB_STAGING_NAME: xcs-project-app-staging
+      DOCKERHUB_PRODUCTION_NAME: xcs-project-app
+
+    steps:
+      - name: Checkout event commit
+        uses: actions/checkout@v2
+
+      - name: Set up Zulu JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: zulu
+          java-version: 8
+
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-${{ runner.arch }}-maven-repository
+
+      - name: Login to Docker Hub for deployment
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Verify and deploy application to staging environment
+        if: ${{ github.event != 'release' }}
+        env:
+          DOCKERHUB_NAME: ${{ env.DOCKERHUB_STAGING_NAME }}
+        run: ./mvnw --no-transfer-progress deploy
+
+      - name: Verify and deploy application to production environment
+        if: ${{ github.event == 'release' }}
+        env:
+          DOCKERHUB_NAME: ${{ env.DOCKERHUB_PRODUCTION_NAME }}
+        run: ./mvnw --no-transfer-progress deploy
