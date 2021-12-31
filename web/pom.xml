@@ -139,7 +139,7 @@
 								</dependsOn>
 							</run>
 							<build>
-								<from>azul/zulu-openjdk-alpine:8</from>
+								<from>azul/zulu-openjdk-alpine:8-jre-headless</from>
 								<ports>
 									<port>8080</port>
 								</ports>
