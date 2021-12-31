@@ -50,10 +50,10 @@ jobs:
         if: ${{ github.event != 'release' }}
         env:
           DOCKERHUB_NAME: ${{ env.DOCKERHUB_STAGING_NAME }}
-        run: ./mvnw --no-transfer-progress deploy
+        run: ./mvnw -B --no-transfer-progress deploy
 
       - name: Verify and deploy application to production environment
         if: ${{ github.event == 'release' }}
         env:
           DOCKERHUB_NAME: ${{ env.DOCKERHUB_PRODUCTION_NAME }}
-        run: ./mvnw --no-transfer-progress deploy
+        run: ./mvnw -B --no-transfer-progress deploy
