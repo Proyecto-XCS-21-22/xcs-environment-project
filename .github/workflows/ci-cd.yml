@@ -12,7 +12,7 @@ on:
       - published
 jobs:
   ci-cd:
-    name: CI & CD
+    name: Verify and deploy
     strategy:
       fail-fast: true
       matrix:
