@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>es.uvigo.esei.dgss</groupId>
 	<artifactId>exercises</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Exercises</name>
@@ -15,7 +15,7 @@
 
 	<scm>
 		<developerConnection>scm:git:https://github.com/Proyecto-XCS-21-22/xcs-environment-project.git</developerConnection>
-	  <tag>release-prep-v0.0.1</tag>
+	  <tag>HEAD</tag>
   </scm>
 
 	<properties>
