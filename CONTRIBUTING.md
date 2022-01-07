@@ -2,23 +2,21 @@
 
 ## Tabla de contenido
 
-- [Manual de contribución](#manual-de-contribución)
-  - [Tabla de contenido](#tabla-de-contenido)
-  - [1. Introducción](#1-introducción)
-  - [2. El día a día de un desarrollador](#2-el-día-a-día-de-un-desarrollador)
-  - [3. Estructura del proyecto](#3-estructura-del-proyecto)
-  - [4. Preparando el entorno de desarrollo](#4-preparando-el-entorno-de-desarrollo)
-  - [5. Desplegando y probando la aplicación localmente](#5-desplegando-y-probando-la-aplicación-localmente)
-  - [6. Cambios que no forman parte de tareas](#6-cambios-que-no-forman-parte-de-tareas)
-  - [7. Convenciones de estilo](#7-convenciones-de-estilo)
-  - [7.1. Estilo de confirmaciones](#71-estilo-de-confirmaciones)
-  - [7.2. Estilo del código fuente](#72-estilo-del-código-fuente)
-  - [8. Publicaciones](#8-publicaciones)
-    - [8.1. Proceso para publicar una nueva versión menor o de parche](#81-proceso-para-publicar-una-nueva-versión-menor-o-de-parche)
-      - [8.1.1. Proceso para publicar una nueva versión menor o de parche con rama temporal de preparación de publicación](#811-proceso-para-publicar-una-nueva-versión-menor-o-de-parche-con-rama-temporal-de-preparación-de-publicación)
-      - [8.1.2. Proceso para publicar una nueva versión menor o de parche sin rama temporal de preparación de publicación](#812-proceso-para-publicar-una-nueva-versión-menor-o-de-parche-sin-rama-temporal-de-preparación-de-publicación)
-    - [8.2. Proceso para publicar una nueva versión mayor](#82-proceso-para-publicar-una-nueva-versión-mayor)
-    - [8.3. Proceso para incorporar cambios y hacer nuevas publicaciones de versiones mayores en mantenimiento](#83-proceso-para-incorporar-cambios-y-hacer-nuevas-publicaciones-de-versiones-mayores-en-mantenimiento)
+- [1. Introducción](#1-introducción)
+- [2. El día a día de un desarrollador](#2-el-día-a-día-de-un-desarrollador)
+- [3. Estructura del proyecto](#3-estructura-del-proyecto)
+- [4. Preparando el entorno de desarrollo](#4-preparando-el-entorno-de-desarrollo)
+- [5. Desplegando y probando la aplicación localmente](#5-desplegando-y-probando-la-aplicación-localmente)
+- [6. Cambios que no forman parte de tareas](#6-cambios-que-no-forman-parte-de-tareas)
+- [7. Convenciones de estilo](#7-convenciones-de-estilo)
+- [7.1. Estilo de confirmaciones](#71-estilo-de-confirmaciones)
+- [7.2. Estilo del código fuente](#72-estilo-del-código-fuente)
+- [8. Publicaciones](#8-publicaciones)
+  - [8.1. Proceso para publicar una nueva versión menor o de parche](#81-proceso-para-publicar-una-nueva-versión-menor-o-de-parche)
+    - [8.1.1. Proceso para publicar una nueva versión menor o de parche con rama temporal de preparación de publicación](#811-proceso-para-publicar-una-nueva-versión-menor-o-de-parche-con-rama-temporal-de-preparación-de-publicación)
+    - [8.1.2. Proceso para publicar una nueva versión menor o de parche sin rama temporal de preparación de publicación](#812-proceso-para-publicar-una-nueva-versión-menor-o-de-parche-sin-rama-temporal-de-preparación-de-publicación)
+  - [8.2. Proceso para publicar una nueva versión mayor](#82-proceso-para-publicar-una-nueva-versión-mayor)
+  - [8.3. Proceso para incorporar cambios y hacer nuevas publicaciones de versiones mayores en mantenimiento](#83-proceso-para-incorporar-cambios-y-hacer-nuevas-publicaciones-de-versiones-mayores-en-mantenimiento)
 
 ## 1. Introducción
 
