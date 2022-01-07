@@ -160,7 +160,7 @@ repositorio de preproducción siguen el formato `<evento>-<rama>-latest`.
 El siguiente diagrama muestra la estructura del entorno en el que vive el
 proyecto, relacionándolo con las diversas tecnologías y herramientas usadas.
 
-![Diagrama del entorno](Representación gráfica del entorno.svg?raw=true)
+![Diagrama del entorno](https://raw.githubusercontent.com/Proyecto-XCS-21-22/xcs-environment-project/master/Representaci%C3%B3n%20gr%C3%A1fica%20del%20entorno.svg)
 
 ## 4. Preparando el entorno de desarrollo
 
