@@ -198,4 +198,19 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<!-- Use a placeholder Docker Hub repository for non-CI or CD deployments -->
+		<profile>
+			<activation>
+				<property>
+					<name>!env.DOCKERHUB_NAMESPACE</name>
+				</property>
+			</activation>
+			<properties>
+				<env.DOCKERHUB_NAMESPACE>local-test</env.DOCKERHUB_NAMESPACE>
+				<env.DOCKERHUB_NAME>local-image</env.DOCKERHUB_NAME>
+			</properties>
+		</profile>
+	</profiles>
 </project>
