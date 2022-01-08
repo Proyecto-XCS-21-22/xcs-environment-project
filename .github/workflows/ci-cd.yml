@@ -1,8 +1,6 @@
 name: CI & CD
 on:
   push:
-    branches-ignore:
-      - release-*
   pull_request:
   release:
     types:
